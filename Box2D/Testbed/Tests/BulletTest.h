@@ -26,6 +26,11 @@ public:
 	BulletTest()
 	{
 		{
+			
+
+			b2FixtureDef fd;
+
+
 			b2BodyDef bd;
 			bd.position.Set(0.0f, 0.0f);
 			b2Body* body = m_world->CreateBody(&bd);
@@ -39,42 +44,65 @@ public:
 			shape.SetAsBox(0.2f, 1.0f, b2Vec2(0.5f, 1.0f), 0.0f);
 			body->CreateFixture(&shape, 0.0f);
 		}
+		{
+			b2BodyDef bd;
+			
+			b2PolygonShape box;
 
+			bd.position.Set(0.0f, 4.0f);
+			bd.angle = 0.0;						
+			box.SetAsBox(4.0f, 0.3f);
+			m_body1 = m_world->CreateBody(&bd);
+			m_body1->CreateFixture(&box, 1.0f);
+
+			bd.position.Set(0.0f, 8.0f);
+			bd.angle = 0.0;						
+			box.SetAsBox(3.0f, 0.2f);
+			m_body2 = m_world->CreateBody(&bd);
+			m_body2->CreateFixture(&box, 1.0f);
+		
+			bd.position.Set(0.0f,12.0f);
+			bd.angle = 0.0;			
+			box.SetAsBox(2.0f, 0.1f);
+			m_body3 = m_world->CreateBody(&bd);
+			m_body3->CreateFixture(&box, 1.0f);
+
+			bd.position.Set(0.0f,16.0f);
+			bd.angle = 0.0;						
+			box.SetAsBox(1.0f, 0.1f);
+			m_body4 = m_world->CreateBody(&bd);
+			m_body4->CreateFixture(&box, 1.0f);
+		}
 		{
 			b2BodyDef bd;
 			bd.type = b2_dynamicBody;
 			bd.position.Set(0.0f, 4.0f);
 
 			b2PolygonShape box;
-			box.SetAsBox(2.0f, 0.1f);
-
-			m_body = m_world->CreateBody(&bd);
-			m_body->CreateFixture(&box, 1.0f);
 
 			box.SetAsBox(0.25f, 0.25f);
-
+			b2CircleShape shape;
+			shape.m_radius = 0.25f;
 			//m_x = RandomFloat(-1.0f, 1.0f);
 			m_x = 0.20352793f;
 			bd.position.Set(m_x, 10.0f);
 			bd.bullet = true;
 
 			m_bullet = m_world->CreateBody(&bd);
-			m_bullet->CreateFixture(&box, 100.0f);
+			m_bullet->CreateFixture(&shape, 100.0f);
 
-			m_bullet->SetLinearVelocity(b2Vec2(0.0f, -50.0f));
+			m_bullet->SetLinearVelocity(b2Vec2(0.0f, -1.0f));
 		}
 	}
 
 	void Launch()
 	{
-		m_body->SetTransform(b2Vec2(0.0f, 4.0f), 0.0f);
-		m_body->SetLinearVelocity(b2Vec2_zero);
-		m_body->SetAngularVelocity(0.0f);
+		printf("LAUNCH CALLED\n");
+		//m_body->SetTransform(b2Vec2(0.0f, 4.0f), 0.0f);
+		//m_body->SetLinearVelocity(b2Vec2_zero);
+		//m_body->SetAngularVelocity(0.0f);
 
-		m_x = RandomFloat(-1.0f, 1.0f);
-		m_bullet->SetTransform(b2Vec2(m_x, 10.0f), 0.0f);
-		m_bullet->SetLinearVelocity(b2Vec2(0.0f, -50.0f));
-		m_bullet->SetAngularVelocity(0.0f);
+
 
 		extern int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
 		extern int32 b2_toiCalls, b2_toiIters, b2_toiMaxIters;
@@ -91,36 +119,62 @@ public:
 		b2_toiMaxRootIters = 0;
 	}
 
+	void Setup(Settings* settings)
+	{
+		m_body1->SetTransform(settings->o1, settings->r1);
+		m_body1->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+		m_body1->SetAngularVelocity(0.0f);
+
+		m_body2->SetTransform(settings->o2, settings->r2);
+		m_body2->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+		m_body2->SetAngularVelocity(0.0f);
+
+		m_body3->SetTransform(settings->o3, settings->r3);
+		m_body3->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+		m_body3->SetAngularVelocity(0.0f);
+
+		m_body4->SetTransform(settings->o4, settings->r4);
+		m_body4->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+		m_body4->SetAngularVelocity(0.0f);
+
+		m_bullet->SetTransform(b2Vec2(-5.0f, 10.0f), 0.0f);
+		m_bullet->SetLinearVelocity(b2Vec2(0.0f, -1.0f));
+		m_bullet->SetAngularVelocity(0.0f);
+
+	}
 	void Step(Settings* settings)
 	{
 		Test::Step(settings);
-
+		auto p = m_bullet->GetPosition();
+		auto v = m_bullet->GetLinearVelocity();
+		
+		settings->p1 = p;
+		settings->v1 = v;
+		if(settings->doGUI)
+			printf("%f %f %f %f\n",p.x,p.y,v.x,v.y);
 		extern int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
 		extern int32 b2_toiCalls, b2_toiIters;
 		extern int32 b2_toiRootIters, b2_toiMaxRootIters;
+		if(settings->doGUI) {
+			if (b2_gjkCalls > 0)
+			{
+				g_debugDraw.DrawString(5, m_textLine, "gjk calls = %d, ave gjk iters = %3.1f, max gjk iters = %d",
+					b2_gjkCalls, b2_gjkIters / float32(b2_gjkCalls), b2_gjkMaxIters);
+				m_textLine += DRAW_STRING_NEW_LINE;
+			}
 
-		if (b2_gjkCalls > 0)
-		{
-			g_debugDraw.DrawString(5, m_textLine, "gjk calls = %d, ave gjk iters = %3.1f, max gjk iters = %d",
-				b2_gjkCalls, b2_gjkIters / float32(b2_gjkCalls), b2_gjkMaxIters);
-			m_textLine += DRAW_STRING_NEW_LINE;
+			if (b2_toiCalls > 0)
+			{
+				g_debugDraw.DrawString(5, m_textLine, "toi calls = %d, ave toi iters = %3.1f, max toi iters = %d",
+					b2_toiCalls, b2_toiIters / float32(b2_toiCalls), b2_toiMaxRootIters);
+				m_textLine += DRAW_STRING_NEW_LINE;
+
+				g_debugDraw.DrawString(5, m_textLine, "ave toi root iters = %3.1f, max toi root iters = %d",
+					b2_toiRootIters / float32(b2_toiCalls), b2_toiMaxRootIters);
+				m_textLine += DRAW_STRING_NEW_LINE;
+			}
 		}
 
-		if (b2_toiCalls > 0)
-		{
-			g_debugDraw.DrawString(5, m_textLine, "toi calls = %d, ave toi iters = %3.1f, max toi iters = %d",
-				b2_toiCalls, b2_toiIters / float32(b2_toiCalls), b2_toiMaxRootIters);
-			m_textLine += DRAW_STRING_NEW_LINE;
-
-			g_debugDraw.DrawString(5, m_textLine, "ave toi root iters = %3.1f, max toi root iters = %d",
-				b2_toiRootIters / float32(b2_toiCalls), b2_toiMaxRootIters);
-			m_textLine += DRAW_STRING_NEW_LINE;
-		}
-
-		if (m_stepCount % 60 == 0)
-		{
-			Launch();
-		}
 	}
 
 	static Test* Create()
@@ -128,7 +182,7 @@ public:
 		return new BulletTest;
 	}
 
-	b2Body* m_body;
+	b2Body* m_body1,*m_body2,*m_body3,*m_body4;
 	b2Body* m_bullet;
 	float32 m_x;
 };

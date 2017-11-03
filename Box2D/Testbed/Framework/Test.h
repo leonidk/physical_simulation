@@ -81,6 +81,15 @@ struct Settings
 		enableSleep = true;
 		pause = false;
 		singleStep = false;
+		doGUI = true;
+		o1 = b2Vec2(0.0f,0.0f);
+		o2 = b2Vec2(0.0f,4.0f);
+		o3 = b2Vec2(0.0f,8.0f);
+		o4 = b2Vec2(0.0f,16.0f);
+		r1=0.0;
+		r2=0.1;
+		r3=0.2;
+		r4=0.3;
 	}
 
 	float32 hz;
@@ -102,6 +111,19 @@ struct Settings
 	bool enableSleep;
 	bool pause;
 	bool singleStep;
+	bool doGUI;
+	b2Vec2 o1;
+	b2Vec2 o2;
+	b2Vec2 o3;
+	b2Vec2 o4;
+	float32 r1;
+	float32 r2;
+	float32 r3;
+	float32 r4;
+
+	b2Vec2 p1;
+	b2Vec2 v1; 
+	
 };
 
 struct TestEntry
@@ -145,6 +167,7 @@ public:
 	virtual ~Test();
 
 	void DrawTitle(const char *string);
+	virtual void Setup(Settings* settings);
 	virtual void Step(Settings* settings);
 	virtual void Keyboard(int key) { B2_NOT_USED(key); }
 	virtual void KeyboardUp(int key) { B2_NOT_USED(key); }

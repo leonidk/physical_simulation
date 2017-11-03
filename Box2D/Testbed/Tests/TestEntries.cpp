@@ -73,6 +73,7 @@
 
 TestEntry g_testEntries[] =
 {
+	{"Bullet Test", BulletTest::Create},	
 	{"Character Collision", CharacterCollision::Create},
 	{"Tiles", Tiles::Create},
 	{"Heavy on Light", HeavyOnLight::Create},
@@ -107,7 +108,6 @@ TestEntry g_testEntries[] =
 	{"Web", Web::Create},
 	{"RopeJoint", RopeJoint::Create},
 	{"Pinball", Pinball::Create},
-	{"Bullet Test", BulletTest::Create},
 	{"Confined", Confined::Create},
 	{"Pyramid", Pyramid::Create},
 	{"Theo Jansen's Walker", TheoJansen::Create},

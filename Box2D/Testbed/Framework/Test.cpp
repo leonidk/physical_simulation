@@ -264,6 +264,10 @@ void Test::LaunchBomb(const b2Vec2& position, const b2Vec2& velocity)
 	m_bomb->CreateFixture(&fd);
 }
 
+void Test::Setup(Settings* settings)
+{
+}
+
 void Test::Step(Settings* settings)
 {
 	float32 timeStep = settings->hz > 0.0f ? 1.0f / settings->hz : float32(0.0f);
@@ -279,7 +283,7 @@ void Test::Step(Settings* settings)
 			timeStep = 0.0f;
 		}
 
-		g_debugDraw.DrawString(5, m_textLine, "****PAUSED****");
+		if(settings->doGUI) g_debugDraw.DrawString(5, m_textLine, "****PAUSED****");
 		m_textLine += DRAW_STRING_NEW_LINE;
 	}
 
@@ -288,7 +292,7 @@ void Test::Step(Settings* settings)
 	flags += settings->drawJoints			* b2Draw::e_jointBit;
 	flags += settings->drawAABBs			* b2Draw::e_aabbBit;
 	flags += settings->drawCOMs				* b2Draw::e_centerOfMassBit;
-	g_debugDraw.SetFlags(flags);
+	if(settings->doGUI) g_debugDraw.SetFlags(flags);
 
 	m_world->SetAllowSleeping(settings->enableSleep);
 	m_world->SetWarmStarting(settings->enableWarmStarting);
@@ -299,8 +303,8 @@ void Test::Step(Settings* settings)
 
 	m_world->Step(timeStep, settings->velocityIterations, settings->positionIterations);
 
-	m_world->DrawDebugData();
-    g_debugDraw.Flush();
+	if(settings->doGUI)m_world->DrawDebugData();
+    if(settings->doGUI)g_debugDraw.Flush();
 
 	if (timeStep > 0.0f)
 	{
@@ -345,7 +349,7 @@ void Test::Step(Settings* settings)
 		m_totalProfile.broadphase += p.broadphase;
 	}
 
-	if (settings->drawProfile)
+	if (settings->doGUI && settings->drawProfile)
 	{
 		const b2Profile& p = m_world->GetProfile();
 
@@ -382,7 +386,7 @@ void Test::Step(Settings* settings)
 		m_textLine += DRAW_STRING_NEW_LINE;
 	}
 
-	if (m_mouseJoint)
+	if (settings->doGUI &&m_mouseJoint)
 	{
 		b2Vec2 p1 = m_mouseJoint->GetAnchorB();
 		b2Vec2 p2 = m_mouseJoint->GetTarget();
@@ -396,7 +400,7 @@ void Test::Step(Settings* settings)
 		g_debugDraw.DrawSegment(p1, p2, c);
 	}
 	
-	if (m_bombSpawning)
+	if (settings->doGUI &&m_bombSpawning)
 	{
 		b2Color c;
 		c.Set(0.0f, 0.0f, 1.0f);
@@ -406,7 +410,7 @@ void Test::Step(Settings* settings)
 		g_debugDraw.DrawSegment(m_mouseWorld, m_bombSpawnPoint, c);
 	}
 
-	if (settings->drawContactPoints)
+	if (settings->doGUI &&settings->drawContactPoints)
 	{
 		const float32 k_impulseScale = 0.1f;
 		const float32 k_axisScale = 0.3f;
