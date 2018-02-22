@@ -41,7 +41,7 @@ if False:
     result = basinhopping(f,x0,accept_test=basin_bounds,niter=niter,disp=True)
     result_err = result.fun
     final_x = result.x
-elif True:
+elif False:
     result = differential_evolution(f, bounds,maxiter=niter,disp=True,tol=0.1)
     result_err = result.fun
     final_x = result.x
@@ -56,12 +56,14 @@ elif False:
             print(i,best)
     result_err = best
     final_x = x0
-else:
+elif False:
     import cma
     x0 = np.array([x[0] + 0.5*(x[1]-x[0]) for x in bounds ])
     es = cma.fmin(f,x0, 3.0,options={'popsize': 80, 'ftarget':0.5,'bounds':[[x[0] for x in bounds], [x[1] for x in bounds ]  ]}, restarts=3)
     result_err = es[1]
     final_x =es[0]
+else:
+    pass
     
 
 strres= [str(x) for x in final_x]
