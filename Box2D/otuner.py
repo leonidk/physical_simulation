@@ -24,9 +24,7 @@ class Simulator(MeasurementInterface):
     def run(self, desired_result, input, limit):
         pass
 
-    #def run(self, desired_result, input, limit):
     def compile(self, cfg, id):
-        #cfg = desired_result.configuration.data
         x = [v for k,v in sorted([(int(k),v) for k,v in cfg.items()])]
         res = subprocess.check_output(['./Build/gmake2/bin/Release/Testbed', '0'] + [str(_) for _ in x])
         numerical_res = float(res.strip())
@@ -41,7 +39,6 @@ class Simulator(MeasurementInterface):
         return manipulator
 
     def save_final_config(self, configuration):
-        print("Final configuration", configuration.data)
         cfg = configuration.data
         x = [v for k,v in sorted([(int(k),v) for k,v in cfg.items()])]
         print(' '.join(["{:.2f}".format(_) for _ in x]))
