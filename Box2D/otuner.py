@@ -25,7 +25,7 @@ class Simulator(MeasurementInterface):
         pass
 
     def compile(self, cfg, id):
-        x = [v for k,v in sorted([(int(k),v) for k,v in cfg.items()])]
+        x = [v for k,v in sorted(cfg.items())]
         res = subprocess.check_output(['./Build/gmake2/bin/Release/Testbed', '0'] + [str(_) for _ in x])
         numerical_res = float(res.strip())
         return opentuner.resultsdb.models.Result(time=numerical_res)
@@ -33,14 +33,14 @@ class Simulator(MeasurementInterface):
     def manipulator(self):
         manipulator = ConfigurationManipulator()
         for idx,b in enumerate(bounds):
-            manipulator.add_parameter(FloatParameter(str(idx),
+            manipulator.add_parameter(FloatParameter(idx,
                                                     b[0],
                                                     b[1]))
         return manipulator
 
     def save_final_config(self, configuration):
         cfg = configuration.data
-        x = [v for k,v in sorted([(int(k),v) for k,v in cfg.items()])]
+        x = [v for k,v in sorted(cfg.items())]
         print(' '.join(["{:.2f}".format(_) for _ in x]))
 
 if __name__ == '__main__':
