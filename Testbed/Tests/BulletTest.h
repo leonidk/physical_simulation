@@ -51,28 +51,28 @@ public:
 			box.SetAsBox(4.0f, 0.3f);
 			m_body1 = m_world->CreateBody(&bd);
 			auto fix = m_body1->CreateFixture(&box, 1.0f);
-      fix->SetRestitution(0.75);
+      fix->SetRestitution(0.0);
 
 			bd.position.Set(0.0f, 8.0f);
 			bd.angle = 0.0;
 			box.SetAsBox(3.0f, 0.2f);
 			m_body2 = m_world->CreateBody(&bd);
 			fix = m_body2->CreateFixture(&box, 1.0f);
-      fix->SetRestitution(0.75);
+      fix->SetRestitution(0.0);
 
 			bd.position.Set(0.0f,12.0f);
 			bd.angle = 0.0;
 			box.SetAsBox(2.0f, 0.1f);
 			m_body3 = m_world->CreateBody(&bd);
 			fix = m_body3->CreateFixture(&box, 1.0f);
-      fix->SetRestitution(0.75);
+      fix->SetRestitution(0.0);
 
 			bd.position.Set(0.0f,16.0f);
 			bd.angle = 0.0;
 			box.SetAsBox(1.0f, 0.1f);
 			m_body4 = m_world->CreateBody(&bd);
 			fix = m_body4->CreateFixture(&box, 1.0f);
-      fix->SetRestitution(0.75);
+      fix->SetRestitution(0.0);
 		}
 		{
 			b2BodyDef bd;
@@ -91,7 +91,7 @@ public:
 
 			m_bullet = m_world->CreateBody(&bd);
 			auto fix = m_bullet->CreateFixture(&shape, 100.0f);
-      fix->SetRestitution(0.75);
+      fix->SetRestitution(0.0);
 
 			m_bullet->SetLinearVelocity(b2Vec2(0.0f, -1.0f));
 		}
