@@ -21,26 +21,9 @@
 
 class BulletTest : public Test
 {
-public:
-
+  public:
 	BulletTest()
 	{
-		//{
-		//	b2FixtureDef fd;
-
-		//	b2BodyDef bd;
-		//	bd.position.Set(0.0f, 0.0f);
-		//	b2Body* body = m_world->CreateBody(&bd);
-
-		//	b2EdgeShape edge;
-
-		//	edge.Set(b2Vec2(-10.0f, 0.0f), b2Vec2(10.0f, 0.0f));
-		//	body->CreateFixture(&edge, 0.0f);
-
-		//	b2PolygonShape shape;
-		//	shape.SetAsBox(0.2f, 1.0f, b2Vec2(0.5f, 1.0f), 0.0f);
-		//	body->CreateFixture(&shape, 0.0f);
-		//}
 		{
 			b2BodyDef bd;
 
@@ -51,28 +34,28 @@ public:
 			box.SetAsBox(4.0f, 0.3f);
 			m_body1 = m_world->CreateBody(&bd);
 			auto fix = m_body1->CreateFixture(&box, 1.0f);
-      fix->SetRestitution(0.0);
+			fix->SetRestitution(0.0);
 
 			bd.position.Set(0.0f, 8.0f);
 			bd.angle = 0.0;
 			box.SetAsBox(3.0f, 0.2f);
 			m_body2 = m_world->CreateBody(&bd);
 			fix = m_body2->CreateFixture(&box, 1.0f);
-      fix->SetRestitution(0.0);
+			fix->SetRestitution(0.0);
 
-			bd.position.Set(0.0f,12.0f);
+			bd.position.Set(0.0f, 12.0f);
 			bd.angle = 0.0;
 			box.SetAsBox(2.0f, 0.1f);
 			m_body3 = m_world->CreateBody(&bd);
 			fix = m_body3->CreateFixture(&box, 1.0f);
-      fix->SetRestitution(0.0);
+			fix->SetRestitution(0.0);
 
-			bd.position.Set(0.0f,16.0f);
+			bd.position.Set(0.0f, 16.0f);
 			bd.angle = 0.0;
 			box.SetAsBox(1.0f, 0.1f);
 			m_body4 = m_world->CreateBody(&bd);
 			fix = m_body4->CreateFixture(&box, 1.0f);
-      fix->SetRestitution(0.0);
+			fix->SetRestitution(0.0);
 		}
 		{
 			b2BodyDef bd;
@@ -91,7 +74,7 @@ public:
 
 			m_bullet = m_world->CreateBody(&bd);
 			auto fix = m_bullet->CreateFixture(&shape, 100.0f);
-      fix->SetRestitution(0.0);
+			fix->SetRestitution(0.0);
 
 			m_bullet->SetLinearVelocity(b2Vec2(0.0f, -1.0f));
 		}
@@ -103,8 +86,6 @@ public:
 		//m_body->SetTransform(b2Vec2(0.0f, 4.0f), 0.0f);
 		//m_body->SetLinearVelocity(b2Vec2_zero);
 		//m_body->SetAngularVelocity(0.0f);
-
-
 
 		extern int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
 		extern int32 b2_toiCalls, b2_toiIters, b2_toiMaxIters;
@@ -121,7 +102,7 @@ public:
 		b2_toiMaxRootIters = 0;
 	}
 
-	void Setup(Settings* settings)
+	void Setup(Settings *settings)
 	{
 		m_body1->SetTransform(settings->o1, settings->r1);
 		m_body1->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
@@ -142,9 +123,8 @@ public:
 		m_bullet->SetTransform(b2Vec2(-30.0f, 40.0f), 0.0f);
 		m_bullet->SetLinearVelocity(b2Vec2(0.0f, -1.0f));
 		m_bullet->SetAngularVelocity(0.0f);
-
 	}
-	void Step(Settings* settings)
+	void Step(Settings *settings)
 	{
 		Test::Step(settings);
 		auto p = m_bullet->GetPosition();
@@ -152,40 +132,40 @@ public:
 
 		settings->p1 = p;
 		settings->v1 = v;
-		if(settings->doGUI)
-			printf("%f %f %f %f\n",p.x,p.y,v.x,v.y);
+		if (settings->doGUI)
+			printf("%f %f %f %f\n", p.x, p.y, v.x, v.y);
 		extern int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
 		extern int32 b2_toiCalls, b2_toiIters;
 		extern int32 b2_toiRootIters, b2_toiMaxRootIters;
-		if(settings->doGUI) {
+		if (settings->doGUI)
+		{
 			if (b2_gjkCalls > 0)
 			{
 				g_debugDraw.DrawString(5, m_textLine, "gjk calls = %d, ave gjk iters = %3.1f, max gjk iters = %d",
-					b2_gjkCalls, b2_gjkIters / float32(b2_gjkCalls), b2_gjkMaxIters);
+									   b2_gjkCalls, b2_gjkIters / float32(b2_gjkCalls), b2_gjkMaxIters);
 				m_textLine += DRAW_STRING_NEW_LINE;
 			}
 
 			if (b2_toiCalls > 0)
 			{
 				g_debugDraw.DrawString(5, m_textLine, "toi calls = %d, ave toi iters = %3.1f, max toi iters = %d",
-					b2_toiCalls, b2_toiIters / float32(b2_toiCalls), b2_toiMaxRootIters);
+									   b2_toiCalls, b2_toiIters / float32(b2_toiCalls), b2_toiMaxRootIters);
 				m_textLine += DRAW_STRING_NEW_LINE;
 
 				g_debugDraw.DrawString(5, m_textLine, "ave toi root iters = %3.1f, max toi root iters = %d",
-					b2_toiRootIters / float32(b2_toiCalls), b2_toiMaxRootIters);
+									   b2_toiRootIters / float32(b2_toiCalls), b2_toiMaxRootIters);
 				m_textLine += DRAW_STRING_NEW_LINE;
 			}
 		}
-
 	}
 
-	static Test* Create()
+	static Test *Create()
 	{
 		return new BulletTest;
 	}
 
-	b2Body* m_body1,*m_body2,*m_body3,*m_body4;
-	b2Body* m_bullet;
+	b2Body *m_body1, *m_body2, *m_body3, *m_body4;
+	b2Body *m_bullet;
 	float32 m_x;
 };
 
