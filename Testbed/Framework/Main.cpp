@@ -434,15 +434,20 @@ int main(int argc, char **argv)
 		doGUI = std::atoi(argv[1]);
 	
 	for(int i=1; i < argc; i++){
-		auto idx = (i-2)%3;
+		auto idx = (i-2)%5;
 		if(idx == 0){
-			settings.bodies.push_back({});
-			settings.rotations.push_back({});
+			settings.bodies.push_back({0.0,0.0});
+			settings.rotations.push_back({0.0});
+			settings.sizes.push_back({1.0,0.1});
 			settings.bodies[settings.bodies.size()-1].x = std::atof(argv[i]);
-		}else if(idx == 1){
+		} else if(idx == 1){
 			settings.bodies[settings.bodies.size()-1].y = std::atof(argv[i]);
-		}else if(idx == 2){
+		} else if(idx == 2){
 			settings.rotations[settings.bodies.size()-1] = std::atof(argv[i]);
+		} else if(idx == 3){
+			settings.sizes[settings.bodies.size()-1].x = std::atof(argv[i]);
+		} else if(idx == 4){
+			settings.sizes[settings.bodies.size()-1].y = std::atof(argv[i]);
 		}
 
 	}

@@ -106,6 +106,7 @@ struct Settings
 	bool doGUI;
 	std::vector<b2Vec2> bodies;
 	std::vector<float> rotations;
+	std::vector<b2Vec2> sizes;
 
 	b2Vec2 p1;
 	b2Vec2 v1;
