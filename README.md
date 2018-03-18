@@ -4,7 +4,8 @@
 Leonid Keselman and Alex Spitzer
 
 ## Part 1
-We found bubble ball to be somewhat fun. <ALEX INSERT SCREENSHOTS OF FUN>
+We found bubble ball to be somewhat fun. 
+**{ALEX INSERT SCREENSHOTS OF FUN}**
 
 ## Part 2
 We've decided to work on Box2D (which this repository is a fork of). We have fixed the common Ubuntu "GLSL 3.3 not supported" error that the normal Box2D repository has.
@@ -22,5 +23,5 @@ For the system in part 4, an observed trial has the following ball trajectory: t
 Construct an interesting simulated ball run with four obstacles, and send Chris the obstacle locations (in metric coordinates). We will run it in reality, and send you back a video and ball trajectory that actually happened. You then modify the obstacle locations, and we repeat, until the desired behavior happens in reality.
 
 ## Part 7
-<IMPLEMENT BUBBLE BALL LEVEL?>
+{**IMPLEMENT BUBBLE BALL LEVEL?**}
 
