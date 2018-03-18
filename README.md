@@ -1,69 +1,26 @@
-![Box2D Logo](http://box2d.org/images/icon.gif)
+# Using Function Optimization To Find Policies: Ball Run
+[CMU RI 16-745: Dynamic Optimization: Assignment 2](http://www.cs.cmu.edu/~cga/dynopt/ass2/)
 
-# Box2D 
+Leonid Keselman and Alex Spitzer
 
-**Box2D is a 2D physics engine for games.**
+## Part 1
+We found bubble ball to be somewhat fun. <ALEX INSERT SCREENSHOTS OF FUN>
 
-For help with Box2D, please visit http://www.box2d.org. There is a forum there where you may post your questions.
+## Part 2
+We've decided to work on Box2D (which this repository is a fork of). We have fixed the common Ubuntu "GLSL 3.3 not supported" error that the normal Box2D repository has.
 
-Please see `Building.txt` to learn how to build Box2D and run the testbed.
+## Part 3
+Make an optimizer that learns to move the ball as far to the right as possible with one obstacle bar 0.1m long. Implement several optimization approaches, including a gradient-based approach, CMA-ES, and another non-derivative-based approach
 
-## Demos
+## Part 4
+A vision system sees obstacles and a goal at obstacles.txt in pixel coordinates (so positive Y is down, you should fix that). The ball is dropped at (431, 181) in pixel coordinates. The obstacles are really 0.25m long and 0.037m high, so you also need to convert the pixel values to meters. Use optimization to find a simulated setup that is "similar" that gets the ball in the goal. A video (slow motion) of the actual ball on this run.
 
-To run the demos, set `Testbed` as your startup project and press <kbd>F5</kbd>. Some test bed commands are:
+## Part 5
+For the system in part 4, an observed trial has the following ball trajectory: trajectory.txt, sampled at 30 frames per second in pixel coordinates. Use optimization to adjust the parameters of the simulation so that the simulated trajectory matches the observed trajectory, with the obstacles back in the observed positions. Parameters to change might include gravity, air resistance, something to do with rolling vs. sliding (friction, moment of inertia of the ball, some parameters you make up, ...), and in the ODE simulation the bounce parameters in dynamics.cpp:
 
-- <kbd>r</kbd> to reset the current test
-- <kbd>SPACE</kbd> to launch a bomb
-- <kbd>&larr;</kbd> <kbd>&rarr;</kbd> keys to pan
-- <kbd>x</kbd> and <kbd>z</kbd> to zoom in/out
-- use the mouse to click and drag objects
+## Part 6
+Construct an interesting simulated ball run with four obstacles, and send Chris the obstacle locations (in metric coordinates). We will run it in reality, and send you back a video and ball trajectory that actually happened. You then modify the obstacle locations, and we repeat, until the desired behavior happens in reality.
 
-## Contributing
+## Part 7
+<IMPLEMENT BUBBLE BALL LEVEL?>
 
-Please do not submit pull requests with new features. Instead, please file an issue first for discussion. For bugs, I prefer detailed bug reports over pull requests.
-
-## Features
-
-### Collision
-- Continuous collision detection
-- Contact callbacks: begin, end, pre-solve, post-solve
-- Convex polygons and circles
-- Multiple shapes per body
-- One-shot contact manifolds
-- Dynamic tree broadphase
-- Efficient pair management
-- Fast broadphase AABB queries
-- Collision groups and categories
-
-### Physics
-- Continuous physics with time of impact solver
-- Persistent body-joint-contact graph
-- Island solution and sleep management
-- Contact, friction, and restitution
-- Stable stacking with a linear-time solver
-- Revolute, prismatic, distance, pulley, gear, mouse joint, and other joint types
-- Joint limits, motors, and friction
-- Momentum decoupled position correction
-- Fairly accurate reaction forces/impulses
-
-### System
-- Small block and stack allocators
-- Centralized tuning parameters
-- Highly portable C++ with no use of STL containers
-
-### Testbed
-- OpenGL with GLFW
-- Graphical user interface with imgui
-- Easily switch between tests using GUI
-- Test framework for easily adding new tests
-- Mouse picking and the bomb!
-- CMake build system files
-
-### Documentation
-- User manual
-- Doxygen document with code comments
-- Active user forum
-
-## License
-
-Box2D is developed by Erin Catto, and has the [zlib license](http://en.wikipedia.org/wiki/Zlib_License). While the zlib license does not require acknowledgement, we encourage you to give credit to Box2D in your product.
