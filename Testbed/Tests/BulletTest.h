@@ -24,39 +24,7 @@ class BulletTest : public Test
   public:
 	BulletTest()
 	{
-		{
-			b2BodyDef bd;
 
-			b2PolygonShape box;
-
-			bd.position.Set(0.0f, 4.0f);
-			bd.angle = 0.0;
-			box.SetAsBox(4.0f, 0.3f);
-			m_body1 = m_world->CreateBody(&bd);
-			auto fix = m_body1->CreateFixture(&box, 1.0f);
-			fix->SetRestitution(0.0);
-
-			bd.position.Set(0.0f, 8.0f);
-			bd.angle = 0.0;
-			box.SetAsBox(3.0f, 0.2f);
-			m_body2 = m_world->CreateBody(&bd);
-			fix = m_body2->CreateFixture(&box, 1.0f);
-			fix->SetRestitution(0.0);
-
-			bd.position.Set(0.0f, 12.0f);
-			bd.angle = 0.0;
-			box.SetAsBox(2.0f, 0.1f);
-			m_body3 = m_world->CreateBody(&bd);
-			fix = m_body3->CreateFixture(&box, 1.0f);
-			fix->SetRestitution(0.0);
-
-			bd.position.Set(0.0f, 16.0f);
-			bd.angle = 0.0;
-			box.SetAsBox(1.0f, 0.1f);
-			m_body4 = m_world->CreateBody(&bd);
-			fix = m_body4->CreateFixture(&box, 1.0f);
-			fix->SetRestitution(0.0);
-		}
 		{
 			b2BodyDef bd;
 			bd.type = b2_dynamicBody;
@@ -104,22 +72,23 @@ class BulletTest : public Test
 
 	void Setup(Settings *settings)
 	{
-		m_body1->SetTransform(settings->o1, settings->r1);
-		m_body1->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-		m_body1->SetAngularVelocity(0.0f);
+		m_bodies.resize(settings->bodies.size());
+		b2BodyDef bd;
 
-		m_body2->SetTransform(settings->o2, settings->r2);
-		m_body2->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-		m_body2->SetAngularVelocity(0.0f);
+		b2PolygonShape box;
+		for(int i=0; i < settings->bodies.size(); i++) {
 
-		m_body3->SetTransform(settings->o3, settings->r3);
-		m_body3->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-		m_body3->SetAngularVelocity(0.0f);
+			bd.position.Set(0.0f, 4.0f);
+			bd.angle = 0.0;
+			box.SetAsBox(4.0f, 0.3f);
+			m_bodies[i] = m_world->CreateBody(&bd);
+			auto fix = m_bodies[i]->CreateFixture(&box, 1.0f);
+			fix->SetRestitution(0.0);
 
-		m_body4->SetTransform(settings->o4, settings->r4);
-		m_body4->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-		m_body4->SetAngularVelocity(0.0f);
-
+			m_bodies[i]->SetTransform(settings->bodies[i], settings->rotations[i]);
+			m_bodies[i]->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+			m_bodies[i]->SetAngularVelocity(0.0f);
+		}
 		m_bullet->SetTransform(b2Vec2(-30.0f, 40.0f), 0.0f);
 		m_bullet->SetLinearVelocity(b2Vec2(0.0f, -1.0f));
 		m_bullet->SetAngularVelocity(0.0f);
@@ -164,7 +133,8 @@ class BulletTest : public Test
 		return new BulletTest;
 	}
 
-	b2Body *m_body1, *m_body2, *m_body3, *m_body4;
+	std::vector<b2Body*> m_bodies;
+	int m_num=0;
 	b2Body *m_bullet;
 	float32 m_x;
 };

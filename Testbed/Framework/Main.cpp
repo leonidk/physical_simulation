@@ -428,53 +428,25 @@ void glfwErrorCallback(int error, const char *description)
 //
 int main(int argc, char **argv)
 {
-	for (int i = 1; i < argc; i++)
-	{
-		switch (i)
-		{
-		case 1:
-			doGUI = std::atoi(argv[i]);
-			break;
-		case 2:
-			settings.o1.x = std::atof(argv[i]);
-			break;
-		case 3:
-			settings.o1.y = std::atof(argv[i]);
-			break;
-		case 4:
-			settings.r1 = std::atof(argv[i]);
-			break;
-		case 5:
-			settings.o2.x = std::atof(argv[i]);
-			break;
-		case 6:
-			settings.o2.y = std::atof(argv[i]);
-			break;
-		case 7:
-			settings.r2 = std::atof(argv[i]);
-			break;
-		case 8:
-			settings.o3.x = std::atof(argv[i]);
-			break;
-		case 9:
-			settings.o3.y = std::atof(argv[i]);
-			break;
-		case 10:
-			settings.r3 = std::atof(argv[i]);
-			break;
-		case 11:
-			settings.o4.x = std::atof(argv[i]);
-			break;
-		case 12:
-			settings.o4.y = std::atof(argv[i]);
-			break;
-		case 13:
-			settings.r4 = std::atof(argv[i]);
-			break;
-		default:
-			break;
+	if(argc < 2)
+		return 1;
+	else
+		doGUI = std::atoi(argv[1]);
+	
+	for(int i=1; i < argc; i++){
+		auto idx = (i-2)%3;
+		if(idx == 0){
+			settings.bodies.push_back({});
+			settings.rotations.push_back({});
+			settings.bodies[settings.bodies.size()-1].x = std::atof(argv[i]);
+		}else if(idx == 1){
+			settings.bodies[settings.bodies.size()-1].y = std::atof(argv[i]);
+		}else if(idx == 2){
+			settings.rotations[settings.bodies.size()-1] = std::atof(argv[i]);
 		}
+
 	}
+
 	//doGUI = std::atoi(argv[1]);
 	settings.doGUI = doGUI;
 #if defined(_WIN32)
