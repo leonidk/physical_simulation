@@ -25,53 +25,54 @@ public:
 
 	BulletTest()
 	{
-		{
-			
+		//{
+		//	b2FixtureDef fd;
 
-			b2FixtureDef fd;
+		//	b2BodyDef bd;
+		//	bd.position.Set(0.0f, 0.0f);
+		//	b2Body* body = m_world->CreateBody(&bd);
 
+		//	b2EdgeShape edge;
 
-			b2BodyDef bd;
-			bd.position.Set(0.0f, 0.0f);
-			b2Body* body = m_world->CreateBody(&bd);
+		//	edge.Set(b2Vec2(-10.0f, 0.0f), b2Vec2(10.0f, 0.0f));
+		//	body->CreateFixture(&edge, 0.0f);
 
-			b2EdgeShape edge;
-
-			edge.Set(b2Vec2(-10.0f, 0.0f), b2Vec2(10.0f, 0.0f));
-			body->CreateFixture(&edge, 0.0f);
-
-			b2PolygonShape shape;
-			shape.SetAsBox(0.2f, 1.0f, b2Vec2(0.5f, 1.0f), 0.0f);
-			body->CreateFixture(&shape, 0.0f);
-		}
+		//	b2PolygonShape shape;
+		//	shape.SetAsBox(0.2f, 1.0f, b2Vec2(0.5f, 1.0f), 0.0f);
+		//	body->CreateFixture(&shape, 0.0f);
+		//}
 		{
 			b2BodyDef bd;
-			
+
 			b2PolygonShape box;
 
 			bd.position.Set(0.0f, 4.0f);
-			bd.angle = 0.0;						
+			bd.angle = 0.0;
 			box.SetAsBox(4.0f, 0.3f);
 			m_body1 = m_world->CreateBody(&bd);
-			m_body1->CreateFixture(&box, 1.0f);
+			auto fix = m_body1->CreateFixture(&box, 1.0f);
+      fix->SetRestitution(0.75);
 
 			bd.position.Set(0.0f, 8.0f);
-			bd.angle = 0.0;						
+			bd.angle = 0.0;
 			box.SetAsBox(3.0f, 0.2f);
 			m_body2 = m_world->CreateBody(&bd);
-			m_body2->CreateFixture(&box, 1.0f);
-		
+			fix = m_body2->CreateFixture(&box, 1.0f);
+      fix->SetRestitution(0.75);
+
 			bd.position.Set(0.0f,12.0f);
-			bd.angle = 0.0;			
+			bd.angle = 0.0;
 			box.SetAsBox(2.0f, 0.1f);
 			m_body3 = m_world->CreateBody(&bd);
-			m_body3->CreateFixture(&box, 1.0f);
+			fix = m_body3->CreateFixture(&box, 1.0f);
+      fix->SetRestitution(0.75);
 
 			bd.position.Set(0.0f,16.0f);
-			bd.angle = 0.0;						
+			bd.angle = 0.0;
 			box.SetAsBox(1.0f, 0.1f);
 			m_body4 = m_world->CreateBody(&bd);
-			m_body4->CreateFixture(&box, 1.0f);
+			fix = m_body4->CreateFixture(&box, 1.0f);
+      fix->SetRestitution(0.75);
 		}
 		{
 			b2BodyDef bd;
@@ -89,7 +90,8 @@ public:
 			bd.bullet = true;
 
 			m_bullet = m_world->CreateBody(&bd);
-			m_bullet->CreateFixture(&shape, 100.0f);
+			auto fix = m_bullet->CreateFixture(&shape, 100.0f);
+      fix->SetRestitution(0.75);
 
 			m_bullet->SetLinearVelocity(b2Vec2(0.0f, -1.0f));
 		}
@@ -137,7 +139,7 @@ public:
 		m_body4->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
 		m_body4->SetAngularVelocity(0.0f);
 
-		m_bullet->SetTransform(b2Vec2(-5.0f, 10.0f), 0.0f);
+		m_bullet->SetTransform(b2Vec2(-30.0f, 40.0f), 0.0f);
 		m_bullet->SetLinearVelocity(b2Vec2(0.0f, -1.0f));
 		m_bullet->SetAngularVelocity(0.0f);
 
@@ -147,7 +149,7 @@ public:
 		Test::Step(settings);
 		auto p = m_bullet->GetPosition();
 		auto v = m_bullet->GetLinearVelocity();
-		
+
 		settings->p1 = p;
 		settings->v1 = v;
 		if(settings->doGUI)

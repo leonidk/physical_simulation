@@ -341,26 +341,6 @@ static void sRestart()
 }
 
 //
-static void sSimulate()
-{
-	if(doGUI) glEnable(GL_DEPTH_TEST);
-	test->Step(&settings);
-
-	if(doGUI)test->DrawTitle(entry->name);
-	if(doGUI)glDisable(GL_DEPTH_TEST);
-
-	if (testSelection != testIndex)
-	{
-		testIndex = testSelection;
-		delete test;
-		entry = g_testEntries + testIndex;
-		test = entry->createFcn();
-		g_camera.m_zoom = 1.0f;
-		g_camera.m_center.Set(0.0f, 20.0f);
-	}
-}
-
-//
 static bool sTestEntriesGetName(void*, int idx, const char** out_name)
 {
 	*out_name = g_testEntries[idx].name;
@@ -444,10 +424,8 @@ void glfwErrorCallback(int error, const char *description)
 
 #define SQR(x) ((x)*(x))
 //
-int main(int argc, char** argv)
-{
-
-	for(int i=1; i < argc; i++) {
+int main(int argc, char** argv) {
+	for(int i = 1; i < argc; i++) {
 		switch(i) {
 			case 1:
 				doGUI = std::atoi(argv[i]);
@@ -493,67 +471,68 @@ int main(int argc, char** argv)
 		}
 	}
 	//doGUI = std::atoi(argv[1]);
-	settings.doGUI = doGUI; 
+	settings.doGUI = doGUI;
 #if defined(_WIN32)
 	// Enable memory-leak reports
 	_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG));
 #endif
 
-	glfwSetErrorCallback(glfwErrorCallback);
+  if(doGUI) {
+    glfwSetErrorCallback(glfwErrorCallback);
 
-	g_camera.m_width = 1024;
-	g_camera.m_height = 640;
+    g_camera.m_width = 1024;
+    g_camera.m_height = 640;
 
-	if (glfwInit() == 0)
-	{
-		fprintf(stderr, "Failed to initialize GLFW\n");
-		return -1;
-	}
+    if (glfwInit() == 0)
+    {
+      fprintf(stderr, "Failed to initialize GLFW\n");
+      return -1;
+    }
 
-	char title[64];
-	sprintf(title, "Box2D Testbed Version %d.%d.%d", b2_version.major, b2_version.minor, b2_version.revision);
+    char title[64];
+    sprintf(title, "Box2D Testbed Version %d.%d.%d", b2_version.major, b2_version.minor, b2_version.revision);
 
-	// Without these settings on macOS, OpenGL 2.1 will be used by default which will cause crashes at boot.
-	// This code is a slightly modified version of the code found here: http://www.glfw.org/faq.html#how-do-i-create-an-opengl-30-context
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	
-if(doGUI) {
-	mainWindow = glfwCreateWindow(g_camera.m_width, g_camera.m_height, title, NULL, NULL);
-	if (mainWindow == NULL)
-	{
-		fprintf(stderr, "Failed to open GLFW mainWindow.\n");
-		glfwTerminate();
-		return -1;
-	}
+    // Without these settings on macOS, OpenGL 2.1 will be used by default which will cause crashes at boot.
+    // This code is a slightly modified version of the code found here: http://www.glfw.org/faq.html#how-do-i-create-an-opengl-30-context
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	glfwMakeContextCurrent(mainWindow);
-	//printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
+    mainWindow = glfwCreateWindow(g_camera.m_width, g_camera.m_height, title, NULL, NULL);
+    if (mainWindow == NULL)
+    {
+      fprintf(stderr, "Failed to open GLFW mainWindow.\n");
+      glfwTerminate();
+      return -1;
+    }
 
-	glfwSetScrollCallback(mainWindow, sScrollCallback);
-	glfwSetWindowSizeCallback(mainWindow, sResizeWindow);
-	glfwSetKeyCallback(mainWindow, sKeyCallback);
-	glfwSetCharCallback(mainWindow, sCharCallback);
-	glfwSetMouseButtonCallback(mainWindow, sMouseButton);
-	glfwSetCursorPosCallback(mainWindow, sMouseMotion);
-	glfwSetScrollCallback(mainWindow, sScrollCallback);
+    glfwMakeContextCurrent(mainWindow);
+    //printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+    glfwSetScrollCallback(mainWindow, sScrollCallback);
+    glfwSetWindowSizeCallback(mainWindow, sResizeWindow);
+    glfwSetKeyCallback(mainWindow, sKeyCallback);
+    glfwSetCharCallback(mainWindow, sCharCallback);
+    glfwSetMouseButtonCallback(mainWindow, sMouseButton);
+    glfwSetCursorPosCallback(mainWindow, sMouseMotion);
+    glfwSetScrollCallback(mainWindow, sScrollCallback);
 
 #if defined(__APPLE__) == FALSE
-	//glewExperimental = GL_TRUE;
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
+    //glewExperimental = GL_TRUE;
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+      fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+      exit(EXIT_FAILURE);
+    }
 #endif
 
-	g_debugDraw.Create();
+    g_debugDraw.Create();
 
-	sCreateUI(mainWindow);
-}
+    sCreateUI(mainWindow);
+  }
+
 	testCount = 0;
 	while (g_testEntries[testCount].createFcn != NULL)
 	{
@@ -570,75 +549,97 @@ if(doGUI) {
 		bt->Setup(&settings);
 	}
 
-	// Control the frame rate. One draw per monitor refresh.
-	if(doGUI)glfwSwapInterval(1);
+	double time1;
 
-	double time1 = glfwGetTime();
+	// Control the frame rate. One draw per monitor refresh.
+	if(doGUI) {
+    glfwSwapInterval(1);
+    glClearColor(0.3f, 0.3f, 0.3f, 1.f);
+    time1 = glfwGetTime();
+  }
+
 	double frameTime = 0.0;
-   
-	if(doGUI)glClearColor(0.3f, 0.3f, 0.3f, 1.f);
+
 	auto run_loop = doGUI ? !glfwWindowShouldClose(mainWindow) : true;
 	auto run_sim = true;
 
-	auto xMin = -10.0f;
-	auto xMax = 10.0f;
-	auto yMin = 0.0f;
-	auto yMax = 10.0f;
-	auto vMin = 1.0f;
-	auto xTarget = 0.965;
-	auto yTarget = 0.365;
-	for (int i=0; run_loop; i++)
+	auto xMin = -40.0f;
+	auto xMax = 40.0f;
+	auto yMin = 0.26f;
+	auto yMax = 50.0f;
+	auto vMin = 0.3f;
+
+	for (int i = 0; run_loop; i++)
 	{
-		if(doGUI)glfwGetWindowSize(mainWindow, &g_camera.m_width, &g_camera.m_height);
-        
-        int bufferWidth, bufferHeight;
-        if(doGUI)glfwGetFramebufferSize(mainWindow, &bufferWidth, &bufferHeight);
-        if(doGUI)glViewport(0, 0, bufferWidth, bufferHeight);
+		if (doGUI) {
+      glfwGetWindowSize(mainWindow, &g_camera.m_width, &g_camera.m_height);
 
-		if(doGUI)glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      int bufferWidth, bufferHeight;
+      glfwGetFramebufferSize(mainWindow, &bufferWidth, &bufferHeight);
+      glViewport(0, 0, bufferWidth, bufferHeight);
 
-		if(doGUI)ImGui_ImplGlfwGL3_NewFrame();
-		if(doGUI)ImGui::SetNextWindowPos(ImVec2(0,0));
-		if(doGUI)ImGui::SetNextWindowSize(ImVec2((float)g_camera.m_width, (float)g_camera.m_height));
-		if(doGUI)ImGui::Begin("Overlay", NULL, ImVec2(0,0), 0.0f, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoInputs|ImGuiWindowFlags_AlwaysAutoResize|ImGuiWindowFlags_NoScrollbar);
-		if(doGUI)ImGui::SetCursorPos(ImVec2(5, (float)g_camera.m_height - 20));
-		if(doGUI)ImGui::Text("%.1f ms", 1000.0 * frameTime);
-		if(doGUI)ImGui::End();
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      ImGui_ImplGlfwGL3_NewFrame();
+      ImGui::SetNextWindowPos(ImVec2(0,0));
+      ImGui::SetNextWindowSize(ImVec2((float)g_camera.m_width, (float)g_camera.m_height));
+      ImGui::Begin("Overlay", NULL, ImVec2(0,0), 0.0f, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoInputs|ImGuiWindowFlags_AlwaysAutoResize|ImGuiWindowFlags_NoScrollbar);
+      ImGui::SetCursorPos(ImVec2(5, (float)g_camera.m_height - 20));
+      ImGui::Text("%.1f ms", 1000.0 * frameTime);
+      ImGui::End();
 
-		sSimulate();
-		if(doGUI)sInterface();
+      glEnable(GL_DEPTH_TEST);
+    }
 
-		// Measure speed
-		double time2 = glfwGetTime();
-		double alpha = 0.9f;
-		frameTime = alpha * frameTime + (1.0 - alpha) * (time2 - time1);
-		time1 = time2;
+    test->Step(&settings);
 
-		if(doGUI)ImGui::Render();
+		if (doGUI) {
+      if (testSelection != testIndex)
+      {
+        testIndex = testSelection;
+        delete test;
+        entry = g_testEntries + testIndex;
+        test = entry->createFcn();
+        g_camera.m_zoom = 1.0f;
+        g_camera.m_center.Set(0.0f, 20.0f);
+      }
 
-		if(doGUI)glfwSwapBuffers(mainWindow);
+      test->DrawTitle(entry->name);
+      glDisable(GL_DEPTH_TEST);
 
-		if(doGUI) glfwPollEvents();
-		auto totalV = settings.v1.x*settings.v1.x + settings.v1.y*settings.v1.y;
+      sInterface();
+
+      // Measure speed
+      double time2 = glfwGetTime();
+      double alpha = 0.9f;
+      frameTime = alpha * frameTime + (1.0 - alpha) * (time2 - time1);
+      time1 = time2;
+
+      ImGui::Render();
+		  glfwSwapBuffers(mainWindow);
+      glfwPollEvents();
+    }
+
+    auto totalV = SQR(settings.v1.x) + SQR(settings.v1.y);
 
 		auto world_bounds = settings.p1.x > xMin && settings.p1.x < xMax && settings.p1.y > yMin && settings.p1.y < yMax;
-	
+
 		//printf("%f \t",totalV);
 		run_sim = totalV > vMin && world_bounds ? true : false;
 		run_loop = doGUI ? !glfwWindowShouldClose(mainWindow) : run_sim;
 	}
 
-	auto finalError = SQR(settings.p1.x-xTarget) + SQR(settings.p1.y-yTarget);
-	printf("%f\n",finalError);
+	printf("%f %f\n", settings.p1.x, settings.p1.y);
 	if (test)
 	{
 		delete test;
 		test = NULL;
 	}
 
-	if(doGUI)g_debugDraw.Destroy();
-	if(doGUI)ImGui_ImplGlfwGL3_Shutdown();
-	glfwTerminate();
+	if(doGUI) {
+    g_debugDraw.Destroy();
+    ImGui_ImplGlfwGL3_Shutdown();
+    glfwTerminate();
+  }
 
 	return 0;
 }

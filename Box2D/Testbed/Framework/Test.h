@@ -122,8 +122,8 @@ struct Settings
 	float32 r4;
 
 	b2Vec2 p1;
-	b2Vec2 v1; 
-	
+	b2Vec2 v1;
+
 };
 
 struct TestEntry
