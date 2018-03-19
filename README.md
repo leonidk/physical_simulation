@@ -4,8 +4,9 @@
 Leonid Keselman and Alex Spitzer
 
 ## Part 1
-We found bubble ball to be somewhat fun. 
-**{ALEX INSERT SCREENSHOTS OF FUN}**
+We found bubble ball to be somewhat fun.
+
+<img src="images/rotate_bball.jpg?raw=true">
 
 ## Part 2
 We've decided to work on Box2D (which this repository is a fork of). We have fixed the common Ubuntu "GLSL 3.3 not supported" error that the normal Box2D repository has.
