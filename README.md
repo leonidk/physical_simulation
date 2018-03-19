@@ -57,3 +57,13 @@ We implemented Bubble Ball Level 7. Below you can see that the simulation someti
 <img src="images/part_6_2.gif?raw=true">
 
 <img src="images/rotate_bball_2.jpg?raw=true">
+
+## Example Usage
+
+We ran our experiments using Python 3.6 on both Mac OS X and Linux. Dependencies include numpy, scipy, and various other optimization packages if using their solvers (e.g. cma for CMA-ES and dlib for MaxLIPO). In order to run the code, you will need to build the Box2D Engine using premake5 and execute optimize.py from the `Testbed/` folder.
+
+```python optimize.py --part 3 random --opt_iters 100 --exp_iters 100
+python optimize.py --part 4 cma --exp_iters 5 --opt_iters 30000
+python optimize.py --part 5 differential_evolution --opt_iters 750
+python optimize.py --part 6 random --opt_iters 20000
+```
