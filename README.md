@@ -13,6 +13,7 @@ We've decided to work on Box2D (which this repository is a fork of). We have fix
 
 ## Part 3
 Make an optimizer that learns to move the ball as far to the right as possible with one obstacle bar 0.1m long. We use a physics coefficent of restitution of 0.75. Implement several optimization approaches, including a gradient-based approach, CMA-ES, and another non-derivative-based approach
+
 | Optimizer | Runtime (ms) | Best | Mean | Std Dev |
 |-------------------------------|--------------|-------|------|---------|
 | CMA-ES (n=100) | 168 | -14.0 | 18.4 | 17.7 |
