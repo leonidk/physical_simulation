@@ -51,7 +51,7 @@ The parameters optimized over were acceleration due to gravity, the friction coe
 
 ## Part 6 & 7
 
-We implemented Bubble Ball Level 7. Below you can see that the simulation sometimes creates scenarios that are unlikely to occur in the real world. To better condition our solution space, we constrained the obstacle orientations to less than 30 degrees. Our optimized solution then closely matched our manual Bubble Ball solution. We emulated the Bubble Ball "wind" power up by adding an initial linear velocity to the ball in our simulation.
+We implemented Bubble Ball Level 7. Below you can see that the simulation sometimes creates scenarios that are unlikely to occur in the real world. To better condition our solution space, we constrained the obstacle orientations to less than 30 degrees. Our optimized solution then closely matched our manual Bubble Ball solution. We emulated the Bubble Ball "wind" power up by adding an initial linear velocity to the ball in our simulation. Level 7 gives the user 4 obstacles to place in the field, and our optimzer only needed two of them to successfully solve the challenge. 
 
 <img src="images/part_6_1.gif?raw=true">
 <img src="images/part_6_2.gif?raw=true">
