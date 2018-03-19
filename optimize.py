@@ -27,7 +27,8 @@ def get_prog_path():
   return get_prog_path_name("Testbed")
 
 def get_lib_path():
-  return get_prog_path_name("libTestbed_lib.so")
+  from sys import platform
+  return get_prog_path_name("libTestbed_lib" + '.dylib' if platform == "darwin" else '.so')
 
 def run_prog_process(args):
   return list(map(float, subprocess.check_output([get_prog_path()] + args).strip().split()))
