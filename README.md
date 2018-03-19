@@ -5,6 +5,7 @@ Leonid Keselman and Alex Spitzer
 
 ## Part 1
 We found bubble ball to be somewhat fun. We got through a few levels. 
+
 <img src="images/rotate_bball.jpg?raw=true">
 
 ## Part 2
