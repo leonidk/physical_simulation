@@ -28,6 +28,11 @@ We use a coefficent of restitution of 0.75. And implemented many approaches, inl
 | Diff Evolution (n=10) | 1970 | -14.7 | 6.4 | 18.1 |
 | Diff Evolution (n=100) | 59618 | -15.4 | 6.1 | 21.0 |
 
+Our best solution had a score of -15.5, with a rotation of roughly 23 degrees.
+
+<img src="images/part_3.gif?raw=true">
+
+
 ## Part 4
 A vision system sees obstacles and a goal at obstacles.txt in pixel coordinates (so positive Y is down, you should fix that). The ball is dropped at (431, 181) in pixel coordinates. The obstacles are really 0.25m long and 0.037m high, so you also need to convert the pixel values to meters. Use optimization to find a simulated setup that is "similar" that gets the ball in the goal. A video (slow motion) of the actual ball on this run.
 
