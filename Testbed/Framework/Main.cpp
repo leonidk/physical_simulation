@@ -440,9 +440,14 @@ extern "C" float *my_func(int argc, char **argv)
 		return NULL;
 	else
 		doGUI = std::atoi(argv[1]);
+
+  settings.gravity = std::atof(argv[2]);
+  settings.friction = std::atof(argv[3]);
+  settings.rest = std::atof(argv[4]);
 	
-	for(int i=1; i < argc; i++){
-		auto idx = (i-2)%5;
+  int skip = 5;
+	for (int i = skip; i < argc; i++){
+		auto idx = (i - skip) % 5;
 		if(idx == 0){
 			settings.bodies.push_back({0.0,0.0});
 			settings.rotations.push_back({0.0});
@@ -560,12 +565,12 @@ extern "C" float *my_func(int argc, char **argv)
 	auto xMax = 40.0f;
 	auto yMin = 0.26f;
 	auto yMax = 50.0f;
-	auto vMin = 2.0f;
+	auto vMin = 0.3f;
 
   positions.clear();
   positions.push_back(0.0);
 
-	for (int i = 0; run_loop; i++)
+	for (int i = 0; run_loop && i < 750; i++)
 	{
 		if (doGUI)
 		{
@@ -587,10 +592,10 @@ extern "C" float *my_func(int argc, char **argv)
 			glEnable(GL_DEPTH_TEST);
 		}
 
+		test->Step(&settings);
+
     positions.push_back(settings.p1.x);
     positions.push_back(settings.p1.y);
-
-		test->Step(&settings);
 
 		if (doGUI)
 		{
@@ -624,8 +629,7 @@ extern "C" float *my_func(int argc, char **argv)
 
 		auto world_bounds = settings.p1.x > xMin && settings.p1.x < xMax && settings.p1.y > yMin && settings.p1.y < yMax;
 
-		//printf("%f \t",totalV);
-		run_sim = totalV > vMin && world_bounds ? true : false;
+		run_sim = world_bounds ? true : false;
 		run_loop = doGUI ? !glfwWindowShouldClose(mainWindow) : run_sim;
 	}
 	//printf("%f %f\n", settings.p1.x, settings.p1.y);

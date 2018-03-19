@@ -7,21 +7,14 @@ import numpy as np
 import scipy
 from scipy.optimize import differential_evolution, basinhopping
 
-class MyBounds(object):
-  def __init__(self, xmax=[1.1, 1.1], xmin=[-1.1, -1.1] ):
-    self.xmax = np.array(xmax)
-    self.xmin = np.array(xmin)
-
-  def __call__(self, **kwargs):
-    x = kwargs["x_new"]
-    tmax = bool(np.all(x <= self.xmax))
-    tmin = bool(np.all(x >= self.xmin))
-    return tmax and tmin
-
 def get_prog_path_name(name):
   script_path = os.path.abspath(os.path.dirname(__file__))
   script2prog = os.path.join("Build", "gmake", "bin", "Release", name)
   return os.path.join(script_path, script2prog)
+
+def get_traj_file():
+  script_path = os.path.abspath(os.path.dirname(__file__))
+  return os.path.join(script_path, "trajectory.txt")
 
 def get_prog_path():
   return get_prog_path_name("Testbed")
@@ -59,23 +52,75 @@ def go_right(positions):
 
 cost_part_3 = go_right
 
-box_x = 10
-box_y = 10.5
+box_x_4 = 10
+box_y_4 = 10.5
 def cost_part_4(positions):
   x, y = positions[-2], positions[-1]
-  return (x - box_x) ** 2 + (y - box_y) ** 2
+  return (x - box_x_4) ** 2 + (y - box_y_4) ** 2
+
+def my_normalize(vec):
+  """ Vec is n by 2 """
+  start = vec[0, :]
+  end = vec[-1, :]
+
+  return (vec - start) / (end - start)
+
+traj = np.loadtxt(get_traj_file())
+traj[:, 1] = -traj[:, 1]
+traj = my_normalize(traj)
+
+box_x_5 = -15
+box_y_5 = 25
+box_5 = np.array((box_x_5, box_y_5))
+def cost_part_5(positions):
+  assert len(positions) % 2 == 0
+  positions = np.reshape(positions, (len(positions) // 2, 2))
+
+  pos_errs = np.sum((positions - box_5) ** 2, axis=1)
+  first_box_ind = (pos_errs < 1.0).nonzero()[0]
+  if len(first_box_ind):
+    positions = positions[:, :first_box_ind[0]]
+
+  start = positions[0, :]
+  end = np.array((box_x_5, box_y_5))
+  scaled_traj = traj * (end - start) + start
+
+  pos_interped1 = np.interp(np.linspace(0, 1, len(scaled_traj)), np.linspace(0, 1, len(positions)), positions[:, 0])
+  pos_interped2 = np.interp(np.linspace(0, 1, len(scaled_traj)), np.linspace(0, 1, len(positions)), positions[:, 1])
+  pos_interped = np.vstack((pos_interped1, pos_interped2)).T
+
+  traj_interped1 = np.interp(np.linspace(0, 1, len(positions)), np.linspace(0, 1, len(scaled_traj)), scaled_traj[:, 0])
+  traj_interped2 = np.interp(np.linspace(0, 1, len(positions)), np.linspace(0, 1, len(scaled_traj)), scaled_traj[:, 1])
+  traj_interped = np.vstack((traj_interped1, traj_interped2)).T
+
+  traj_weights = np.linspace(1, 0, len(traj_interped)) ** 2
+  pos_weights = np.linspace(1, 0, len(pos_interped)) ** 2
+  return np.mean(((pos_interped - scaled_traj) ** 2).T * pos_weights) + \
+         np.mean(((traj_interped - positions) ** 2).T * traj_weights)
 
 def get_params_part_3(x):
-  return np.array((x[0], x[1], x[2] / 10.0, 1.0, 0.1))
+  return np.array((-100, 0.0, 0.65, x[0], x[1], x[2] / 10.0, 1.0, 0.1))
 
 def get_params_part_4(x):
   return np.array((
-    box_x, box_y - 0.6, 0, 1.0, 0.4,
-    box_x + 1.4, box_y, 0, 0.4, 1.0,
-    box_x - 1.4, box_y, 0, 0.4, 1.0,
-    x[0], x[1], x[2] / 10, 5.0, 0.8,
-    x[3], x[4], x[5] / 10, 5.0, 0.8,
-    x[6], x[7], x[8] / 10, 5.0, 0.8
+    -100, 0.04, 0.45,
+    box_x_4, box_y_4 - 0.6, 0, 1.0, 0.4,
+    box_x_4 + 1.4, box_y_4, 0, 0.4, 1.0,
+    box_x_4 - 1.4, box_y_4, 0, 0.4, 1.0,
+    x[0], x[1], x[2] / 10, 4.0, 0.8,
+    x[3], x[4], x[5] / 10, 4.0, 0.8,
+    x[6], x[7], x[8] / 10, 4.0, 0.8
+  ))
+
+def get_params_part_5(x):
+  return np.array((
+    x[9], x[10] / 10, x[11] / 10,
+    box_x_5, box_y_5 - 0.6, 0, 1.0, 0.4,
+    box_x_5 + 1.4, box_y_5, 0, 0.4, 1.0,
+    box_x_5 - 1.4, box_y_5, 0, 0.4, 1.0,
+    x[0], x[1], x[2] / 10, 4.0, 0.8,
+    x[3], x[4], x[5] / 10, 4.0, 0.8,
+    x[6], x[7], x[8] / 10, 4.0, 0.8
   ))
 
 def get_bounds_part_3():
@@ -85,6 +130,12 @@ def get_bounds_part_4():
   return [[-40, 20], [0, 40], [0, 10 * np.pi],
           [-40, 20], [0, 40], [0, 10 * np.pi],
           [-40, 20], [0, 40], [0, 10 * np.pi]]
+
+def get_bounds_part_5():
+  return [[-50, 0], [20, 40], [0, 10 * np.pi],
+          [-50, 0], [20, 40], [0, 10 * np.pi],
+          [-50, 0], [20, 40], [0, 10 * np.pi],
+          [-400, -40], [0, 10], [0, 8.0]]
 
 def fdlib(*args):
   return f(args)
@@ -97,6 +148,17 @@ def f(x, *args):
   return cost
 
 def method_basinhopping():
+  class MyBounds(object):
+    def __init__(self, xmax=[1.1, 1.1], xmin=[-1.1, -1.1] ):
+      self.xmax = np.array(xmax)
+      self.xmin = np.array(xmin)
+
+    def __call__(self, **kwargs):
+      x = kwargs["x_new"]
+      tmax = bool(np.all(x <= self.xmax))
+      tmin = bool(np.all(x >= self.xmin))
+      return tmax and tmin
+
   randn = np.random.random_sample(len(bounds))
   x0 = np.array([x[0] + a*(x[1]-x[0]) for x,a in zip(bounds, randn) ])
   basin_bounds = MyBounds([x[1] for x in bounds], [x[0] for x in bounds])
@@ -104,7 +166,7 @@ def method_basinhopping():
   return result.fun, result.x
 
 def method_differential_evolution():
-  result = differential_evolution(f, bounds, maxiter=args.opt_iters, disp=True, tol=0.1)
+  result = differential_evolution(f, bounds, maxiter=args.opt_iters, disp=True)
   return result.fun, result.x
 
 def get_random_x0():
@@ -150,7 +212,7 @@ def method_dlib():
 def method_cma():
   import cma
   x0 = np.array([x[0] + 0.5*(x[1]-x[0]) for x in bounds])
-  es = cma.fmin(f, x0, 30.0, options={
+  es = cma.fmin(f, x0, 2.0, options={
                               'popsize': 80,
                               #'tolfun': 1e-2,
                               'maxfevals': args.opt_iters,
@@ -189,7 +251,7 @@ if __name__ == "__main__":
   parser.add_argument("method", default="random", type=str, nargs='?', choices=method_map.keys())
   parser.add_argument("--opt_iters", default=100, type=int, nargs='?')
   parser.add_argument("--exp_iters", default=1, type=int, nargs='?')
-  parser.add_argument("--part", default='4', type=str, nargs='?', choices=params_map.keys())
+  parser.add_argument("--part", default='5', type=str, nargs='?', choices=params_map.keys())
   args = parser.parse_args()
 
   cost_function = cost_map[args.part]
