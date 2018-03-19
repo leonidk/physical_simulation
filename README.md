@@ -12,7 +12,7 @@ We found bubble ball to be somewhat fun. We got through a few levels.
 We've decided to work on Box2D (which this repository is a fork of). We have fixed the common Ubuntu "GLSL 3.3 not supported" error that the normal Box2D repository has. Additionally we made our simulation a shared library so we could load it in our Python optimizer without having to reload the executable. This greatly (by a factor of 60) decreased our runtime for these simple simulations (the numbers in the table are the old execution numbers).
 
 ## Part 3
-We use a coefficent of restitution of 0.75. And implemented many approaches, inlcuding random search. We found that gradient based methods were not useful as greatly depended on their initalization -- if the ball wasn't going to impact the obstacle in either the original evaluations or the numerical gradient offsets, then there was zero gradient and the solvers immediately exited. Random parameter search was very effective, tending to produce good solutions in a competitive timeframe. CMA and Differential Evolution produced good solutions. 
+We use a coefficent of restitution of 0.75. And implemented many approaches, inlcuding random search. We found that gradient based methods were not useful as their performance greatly depended on their initalization -- if the ball wasn't going to impact the obstacle in either the original evaluations or the numerical gradient offsets, then there was zero gradient and the solvers immediately exited. Random parameter search was very effective, tending to produce good solutions in a competitive timeframe. CMA and Differential Evolution produced good solutions. 
 
 | Optimizer | Runtime (ms) | Best | Mean | Std Dev |
 |-------------------------------|--------------|-------|------|---------|
@@ -29,7 +29,7 @@ We use a coefficent of restitution of 0.75. And implemented many approaches, inl
 | Diff Evolution (n=100) | 59618 | -15.4 | 6.1 | 21.0 |
 | [MaxLIPO](http://blog.dlib.net/2017/12/a-global-optimization-algorithm-worth.html) | 60000 | -14.2 | None | None |
 
-Our best solution had a score of -15.5, with a rotation of roughly 23 degrees.
+Our best solution had a score of -15.5, with a rotation of roughly 23 degrees. The resulting ball trajectory is seen below.
 
 <img src="images/part_3.gif?raw=true">
 
@@ -52,7 +52,7 @@ The parameters optimized over were acceleration due to gravity, the friction coe
 
 ## Part 6 & 7
 
-We implemented Bubble Ball Level 7. Below you can see that the simulation sometimes creates scenarios that are unlikely to occur in the real world. To better condition our solution space, we constrained the obstacle orientations to less than 30 degrees. Our optimized solution then closely matched our manual Bubble Ball solution. We emulated the Bubble Ball "wind" power up by adding an initial linear velocity to the ball in our simulation. Level 7 gives the user 4 obstacles to place in the field, and our optimzer only needed two of them to successfully solve the challenge. 
+We implemented Bubble Ball Level 7. Below you can see that the simulation sometimes creates scenarios that are unlikely to occur in the real world. To better condition our solution space, we constrained the obstacle orientations to less than 30 degrees. Our optimized solution then closely matched our manual Bubble Ball solution. We emulated the Bubble Ball "wind" power up by adding an initial linear velocity to the ball in our simulation. Level 7 gives the user four obstacles to place in the field and our optimzer only needed two of them to successfully solve the challenge. 
 
 <img src="images/part_6_1.gif?raw=true">
 <img src="images/part_6_2.gif?raw=true">
@@ -61,7 +61,7 @@ We implemented Bubble Ball Level 7. Below you can see that the simulation someti
 
 ## Example Usage
 
-We ran our experiments using Python 3.6 on both Mac OS X and Linux. Dependencies include numpy, scipy, and various other optimization packages if using their solvers (e.g. cma for CMA-ES and dlib for MaxLIPO). In order to run the code, you will need to build the Box2D Engine using premake5 and execute optimize.py from the `Testbed/` folder.
+We ran our experiments using Python 3.6 on both Mac OS X and Linux. Dependencies include numpy, scipy, and various other optimization packages if using their solvers (e.g. cma for CMA-ES and dlib for MaxLIPO). In order to run the code, you will need to build the Box2D Engine using premake5 with the gmake action and execute optimize.py from the `Testbed/` folder.
 
 ```
 python optimize.py --part 3 random --opt_iters 100 --exp_iters 100
