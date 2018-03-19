@@ -41,11 +41,19 @@ We setup a similiar task in our simulation -- getting a ball in a cup, using thr
 
 
 ## Part 5
-For the system in part 4, an observed trial has the following ball trajectory: trajectory.txt, sampled at 30 frames per second in pixel coordinates. Use optimization to adjust the parameters of the simulation so that the simulated trajectory matches the observed trajectory, with the obstacles back in the observed positions. Parameters to change might include gravity, air resistance, something to do with rolling vs. sliding (friction, moment of inertia of the ball, some parameters you make up, ...), and in the ODE simulation the bounce parameters in dynamics.cpp:
 
-## Part 6
-Construct an interesting simulated ball run with four obstacles, and send Chris the obstacle locations (in metric coordinates). We will run it in reality, and send you back a video and ball trajectory that actually happened. You then modify the obstacle locations, and we repeat, until the desired behavior happens in reality.
+To match the real world trajectory, we relied on the differential evolution algorithm. We tried using regular polygons to represent the ball which did not seem to improve the solution found by the optimizer. Differential evolution converged to the correct arrangement of the obstacles after early time steps' errors were weighted higher. This was done with weights that decreased quadratically with each time step, to a final small positive value. In our experiments, this was the only method that resulted in a solution that resembled the video in under five minutes.
 
-## Part 7
-{**IMPLEMENT BUBBLE BALL LEVEL?**}
+The parameters optimized over were acceleration due to gravity, the friction coefficient, the restitution coefficient, and the three obstacles positions and orientations. In order to align the simulated ball trajectory to the provided video ball trajectory, we normalized the coordinates to a common reference frame. The total error was the sum of the mean square distance from the interpolated simulated trajectory to the video trajectory and the interpolated video trajectory to the simulated trajectory.
 
+<img src="images/part_5_1.gif?raw=true">
+<img src="images/part_5_2.gif?raw=true">
+
+## Part 6 & 7
+
+We implemented Bubble Ball Level 7. Below you can see that the simulation sometimes creates scenarios that are unlikely to occur in the real world. To better condition our solution space, we constrained the obstacle orientations to less than 30 degrees. Our optimized solution then closely matched our manual Bubble Ball solution. We emulated the Bubble Ball "wind" power up by adding an initial linear velocity to the ball in our simulation.
+
+<img src="images/part_6_1.gif?raw=true">
+<img src="images/part_6_2.gif?raw=true">
+
+<img src="images/rotate_bball_2.jpg?raw=true">
