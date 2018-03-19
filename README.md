@@ -4,15 +4,14 @@
 Leonid Keselman and Alex Spitzer
 
 ## Part 1
-We found bubble ball to be somewhat fun.
-
+We found bubble ball to be somewhat fun. We got through a few levels. 
 <img src="images/rotate_bball.jpg?raw=true">
 
 ## Part 2
-We've decided to work on Box2D (which this repository is a fork of). We have fixed the common Ubuntu "GLSL 3.3 not supported" error that the normal Box2D repository has.
+We've decided to work on Box2D (which this repository is a fork of). We have fixed the common Ubuntu "GLSL 3.3 not supported" error that the normal Box2D repository has. Additionally we made our simulation a shared library so we could load it in our Python optimizer without having to reload the executable. This greatly (by a factor of 60) decreased our runtime for these simple simulations (the numbers in the table are the old execution numbers).
 
 ## Part 3
-Make an optimizer that learns to move the ball as far to the right as possible with one obstacle bar 0.1m long. We use a physics coefficent of restitution of 0.75. Implement several optimization approaches, including a gradient-based approach, CMA-ES, and another non-derivative-based approach
+We use a coefficent of restitution of 0.75. And implemented many approaches, inlcuding random search. We found that gradient based methods were not useful as greatly depended on their initalization -- if the ball wasn't going to impact the obstacle in either the original evaluations or the numerical gradient offsets, then there was zero gradient and the solvers immediately exited. Random parameter search was very effective, tending to produce good solutions in a competitive timeframe. CMA and Differential Evolution produced good solutions. 
 
 | Optimizer | Runtime (ms) | Best | Mean | Std Dev |
 |-------------------------------|--------------|-------|------|---------|
