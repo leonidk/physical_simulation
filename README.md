@@ -27,6 +27,7 @@ We use a coefficent of restitution of 0.75. And implemented many approaches, inl
 | SLSQP (eps=1e-8) | 30 | 17.0 | 30.0 | 1.7 |
 | Diff Evolution (n=10) | 1970 | -14.7 | 6.4 | 18.1 |
 | Diff Evolution (n=100) | 59618 | -15.4 | 6.1 | 21.0 |
+| [MaxLIPO](http://blog.dlib.net/2017/12/a-global-optimization-algorithm-worth.html) | 60000 | -14.2 | None | None |
 
 Our best solution had a score of -15.5, with a rotation of roughly 23 degrees.
 
