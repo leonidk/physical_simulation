@@ -71,6 +71,8 @@ traj = my_normalize(traj)
 
 box_x_5 = -15
 box_y_5 = 25
+#box_x_5 = -20
+#box_y_5 = 30
 box_5 = np.array((box_x_5, box_y_5))
 def cost_part_5(positions):
   assert len(positions) % 2 == 0
@@ -93,34 +95,54 @@ def cost_part_5(positions):
   traj_interped2 = np.interp(np.linspace(0, 1, len(positions)), np.linspace(0, 1, len(scaled_traj)), scaled_traj[:, 1])
   traj_interped = np.vstack((traj_interped1, traj_interped2)).T
 
-  traj_weights = np.linspace(1, 0, len(traj_interped)) ** 2
-  pos_weights = np.linspace(1, 0, len(pos_interped)) ** 2
+  traj_weights = np.linspace(1, 0.01, len(traj_interped)) ** 2
+  pos_weights = np.linspace(1, 0.01, len(pos_interped)) ** 2
   return np.mean(((pos_interped - scaled_traj) ** 2).T * pos_weights) + \
          np.mean(((traj_interped - positions) ** 2).T * traj_weights)
 
+box_x_6 = -8
+box_y_6 = 30
+def cost_part_6(positions):
+  x, y = positions[-2], positions[-1]
+  return (x - box_x_6) ** 2 + (y - box_y_6) ** 2
+
 def get_params_part_3(x):
-  return np.array((-100, 0.0, 0.65, x[0], x[1], x[2] / 10.0, 1.0, 0.1))
+  return np.array((-100, 0.0, 0.65, x[0], x[1], x[2] / 10.0, 1.0, 0.1, 0))
 
 def get_params_part_4(x):
   return np.array((
     -100, 0.04, 0.45,
-    box_x_4, box_y_4 - 0.6, 0, 1.0, 0.4,
-    box_x_4 + 1.4, box_y_4, 0, 0.4, 1.0,
-    box_x_4 - 1.4, box_y_4, 0, 0.4, 1.0,
-    x[0], x[1], x[2] / 10, 4.0, 0.8,
-    x[3], x[4], x[5] / 10, 4.0, 0.8,
-    x[6], x[7], x[8] / 10, 4.0, 0.8
+    box_x_4, box_y_4 - 0.6, 0, 1.0, 0.4, 0,
+    box_x_4 + 1.4, box_y_4, 0, 0.4, 1.0, 0,
+    box_x_4 - 1.4, box_y_4, 0, 0.4, 1.0, 0,
+    x[0], x[1], x[2] / 10, 4.0, 0.8, 0,
+    x[3], x[4], x[5] / 10, 4.0, 0.8, 0,
+    x[6], x[7], x[8] / 10, 4.0, 0.8, 0
   ))
 
 def get_params_part_5(x):
   return np.array((
     x[9], x[10] / 10, x[11] / 10,
-    box_x_5, box_y_5 - 0.6, 0, 1.0, 0.4,
-    box_x_5 + 1.4, box_y_5, 0, 0.4, 1.0,
-    box_x_5 - 1.4, box_y_5, 0, 0.4, 1.0,
-    x[0], x[1], x[2] / 10, 4.0, 0.8,
-    x[3], x[4], x[5] / 10, 4.0, 0.8,
-    x[6], x[7], x[8] / 10, 4.0, 0.8
+    box_x_5, box_y_5 - 0.6, 0, 1.0, 0.4, 0,
+    box_x_5 + 1.4, box_y_5, 0, 0.4, 1.0, 0,
+    box_x_5 - 1.4, box_y_5, 0, 0.4, 1.0, 0,
+    x[0], x[1], x[2] / 10, 4.0, 0.8, 0,
+    x[3], x[4], x[5] / 10, 4.0, 0.8, 0,
+    x[6], x[7], x[8] / 10, 4.0, 0.8, 0
+  ))
+
+def get_params_part_6(x):
+  return np.array((
+    -100, 0.04, 0.45,
+    box_x_6, box_y_6 - 0.6, 0, 1.0, 0.4, 0,
+    box_x_6 + 1.4, box_y_6, 0, 0.4, 1.0, 0,
+    box_x_6 - 1.4, box_y_6, 0, 0.4, 1.0, 0,
+    -18, box_y_6, 0, 1.5, 0.8, 0,
+    -25, box_y_6, 0, 2.0, 0.8, 0,
+    x[0], x[1], x[2]   / 10, 4.0, 0.4, 1,
+    x[3], x[4], x[5]   / 10, 2.5, 0.4, 1,
+    x[6], x[7], x[8]   / 10, 2.5, 0.4, 1,
+    x[9], x[10], x[11] / 10, 2.5, 0.4, 1
   ))
 
 def get_bounds_part_3():
@@ -136,6 +158,13 @@ def get_bounds_part_5():
           [-50, 0], [20, 40], [0, 10 * np.pi],
           [-50, 0], [20, 40], [0, 10 * np.pi],
           [-400, -40], [0, 10], [0, 8.0]]
+
+def get_bounds_part_6():
+  return [[-30, 0], [25, 35], [0, 1 * np.pi],
+          [-30, 0], [25, 35], [0, 1 * np.pi],
+          [-30, 0], [25, 35], [0, 1 * np.pi],
+          [-30, 0], [25, 35], [0, 1 * np.pi]]
+
 
 def fdlib(*args):
   return f(args)
