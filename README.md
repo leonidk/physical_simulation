@@ -35,7 +35,10 @@ Our best solution had a score of -15.5, with a rotation of roughly 23 degrees.
 
 
 ## Part 4
-A vision system sees obstacles and a goal at obstacles.txt in pixel coordinates (so positive Y is down, you should fix that). The ball is dropped at (431, 181) in pixel coordinates. The obstacles are really 0.25m long and 0.037m high, so you also need to convert the pixel values to meters. Use optimization to find a simulated setup that is "similar" that gets the ball in the goal. A video (slow motion) of the actual ball on this run.
+We setup a similiar task in our simulation -- getting a ball in a cup, using three obstacles. Our model includes both friction and restitution. In trying out different solvers, none of them provided adequete solutions except for differential evolution. CMA-ES, MaxLIPO, Random, and all gradient based methods were unable to provide a solution within 1 minute of runtime, whereas differential evolution was able to solve the problem in (usually) about 5-15 seconds. An example configuration is seen below.
+
+<img src="images/part_4.gif?raw=true">
+
 
 ## Part 5
 For the system in part 4, an observed trial has the following ball trajectory: trajectory.txt, sampled at 30 frames per second in pixel coordinates. Use optimization to adjust the parameters of the simulation so that the simulated trajectory matches the observed trajectory, with the obstacles back in the observed positions. Parameters to change might include gravity, air resistance, something to do with rolling vs. sliding (friction, moment of inertia of the ball, some parameters you make up, ...), and in the ODE simulation the bounce parameters in dynamics.cpp:
