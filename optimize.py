@@ -20,7 +20,7 @@ class MyBounds(object):
 
 def get_prog_path_name(name):
   script_path = os.path.abspath(os.path.dirname(__file__))
-  script2prog = os.path.join("Build", "gmake", "bin", "Debug", name)
+  script2prog = os.path.join("Build", "gmake", "bin", "Release", name)
   return os.path.join(script_path, script2prog)
 
 def get_prog_path():
@@ -51,37 +51,46 @@ def run_prog_lib(args):
   rets = prog_lib.my_func(argc, argv)
   return rets[0], rets[1]
 
-run_prog = run_prog_lib
-
 def go_right(x, y):
   return -x
 
-def hit_target(x, y):
-  x_target = 0.965
-  y_target = 0.365
-  return (x - x_target) ** 2 + (y - y_target) ** 2
+cost_part_3 = go_right
 
-def get_params_one(x):
-  return np.array((x[0], 13.29349, 2.17307, -100, -100, -100, -100, -100, -100, -100, -100, -100))
+box_x = 10
+box_y = 10.5
+def cost_part_4(x, y):
+  return (x - box_x) ** 2 + (y - box_y) ** 2
 
-def get_params_two(x):
+def get_params_part_3(x):
   return np.array((x[0], x[1], x[2] / 10.0, 1.0, 0.1))
 
-get_params = get_params_two
+def get_params_part_4(x):
+  return np.array((
+    box_x, box_y - 0.6, 0, 1.0, 0.4,
+    box_x + 1.4, box_y, 0, 0.4, 1.0,
+    box_x - 1.4, box_y, 0, 0.4, 1.0,
+    x[0], x[1], x[2] / 10, 5.0, 0.4,
+    x[3], x[4], x[5] / 10, 5.0, 0.4,
+    x[6], x[7], x[8] / 10, 5.0, 0.4
+  ))
+
+def get_bounds_part_3():
+  return [[-50, 0], [-20, 40], [0, 10 * np.pi]]
+
+def get_bounds_part_4():
+  return [[-40, 20], [0, 40], [0, 10 * np.pi],
+          [-40, 20], [0, 40], [0, 10 * np.pi],
+          [-40, 20], [0, 40], [0, 10 * np.pi]]
+
+def fdlib(*args):
+  return f(args)
 
 def f(x, *args):
   real_x = get_params(x)
-  ball_x, ball_y = run_prog(['0'] + list(map(str, real_x)))
+  ball_x, ball_y = run_prog_lib(['0'] + list(map(str, real_x)))
   cost = cost_function(ball_x, ball_y)
 
   return cost
-
-#bounds = [(-50, 0), (5, 40), (0, 10 * np.pi),
-#          (-50, 0), (5, 40), (0, 10 * np.pi),
-#          (-50, 0), (5, 40), (0, 10 * np.pi),
-#          (-50, 0), (5, 40), (0, 10 * np.pi)]
-#bounds = [(-40, -20), (0, 40), (0, 10 * np.pi)]
-bounds = [(-50, 0), (-20, 40), (0, 10 * np.pi)]
 
 def method_basinhopping():
   randn = np.random.random_sample(len(bounds))
@@ -129,10 +138,16 @@ def method_random():
 
   return best, best_x
 
+def method_dlib():
+  import dlib
+  x = dlib.find_min_global(fdlib, *list(map(list, zip(*bounds))), args.opt_iters)
+  return x[1], x[0]
+
 def method_cma():
   import cma
   x0 = np.array([x[0] + 0.5*(x[1]-x[0]) for x in bounds])
-  es = cma.fmin(f, x0, 3.0, options={
+  es = cma.fmin(f, x0, 30.0, options={
+                              'popsize': 80,
                               #'tolfun': 1e-2,
                               'maxfevals': args.opt_iters,
                               #'tolx' : 1e-3,
@@ -158,16 +173,25 @@ def run_n(f, n):
 if __name__ == "__main__":
   import argparse
 
-  method_map = {x[7:] : y for x, y in globals().items() if x.startswith('method_')}
+  def get_map(prefix):
+    return {x[len(prefix):] : y for x, y in globals().items() if x.startswith(prefix)}
+
+  method_map = get_map('method_')
+  params_map = get_map('get_params_part_')
+  bounds_map = get_map('get_bounds_part_')
+  cost_map = get_map('cost_part_')
 
   parser = argparse.ArgumentParser()
-  parser.add_argument("method", default="cma", type=str, nargs='?', choices=method_map.keys())
-  parser.add_argument("--opt_iters", default=10, type=int, nargs='?')
-  parser.add_argument("--exp_iters", default=100, type=int, nargs='?')
+  parser.add_argument("method", default="random", type=str, nargs='?', choices=method_map.keys())
+  parser.add_argument("--opt_iters", default=100, type=int, nargs='?')
+  parser.add_argument("--exp_iters", default=1, type=int, nargs='?')
+  parser.add_argument("--part", default='4', type=str, nargs='?', choices=params_map.keys())
   args = parser.parse_args()
 
-  cost_function = go_right
+  cost_function = cost_map[args.part]
   method = method_map[args.method]
+  get_params = params_map[args.part]
+  bounds = bounds_map[args.part]()
 
   result_err, result_mean, result_stddev, total_time, final_x = run_n(method, args.exp_iters)
 
