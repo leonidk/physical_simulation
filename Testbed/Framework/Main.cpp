@@ -65,6 +65,8 @@ namespace
 	b2Vec2 lastp;
 }
 
+float rets[2];
+
 //
 static void sCreateUI(GLFWwindow *window)
 {
@@ -426,10 +428,14 @@ void glfwErrorCallback(int error, const char *description)
 
 #define SQR(x) ((x) * (x))
 //
-int main(int argc, char **argv)
+extern "C" float *my_func(int argc, char **argv)
 {
+  settings.bodies.clear();
+  settings.rotations.clear();
+  settings.sizes.clear();
+
 	if(argc < 2)
-		return 1;
+		return NULL;
 	else
 		doGUI = std::atoi(argv[1]);
 	
@@ -469,7 +475,7 @@ int main(int argc, char **argv)
 		if (glfwInit() == 0)
 		{
 			fprintf(stderr, "Failed to initialize GLFW\n");
-			return -1;
+			return NULL;
 		}
 
 		char title[64];
@@ -487,7 +493,7 @@ int main(int argc, char **argv)
 		{
 			fprintf(stderr, "Failed to open GLFW mainWindow.\n");
 			glfwTerminate();
-			return -1;
+			return NULL;
 		}
 
 		glfwMakeContextCurrent(mainWindow);
@@ -614,8 +620,7 @@ int main(int argc, char **argv)
 		run_sim = totalV > vMin && world_bounds ? true : false;
 		run_loop = doGUI ? !glfwWindowShouldClose(mainWindow) : run_sim;
 	}
-
-	printf("%f %f\n", settings.p1.x, settings.p1.y);
+	//printf("%f %f\n", settings.p1.x, settings.p1.y);
 	if (test)
 	{
 		delete test;
@@ -629,5 +634,13 @@ int main(int argc, char **argv)
 		glfwTerminate();
 	}
 
-	return 0;
+  rets[0] = settings.p1.x;
+  rets[1] = settings.p1.y;
+  return rets;
+}
+
+int main(int argc, char **argv) {
+  float *rets =  my_func(argc, argv);
+	printf("%f %f\n", rets[0], rets[1]);
+  return 0;
 }

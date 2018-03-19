@@ -23,7 +23,7 @@ workspace "Box2D"
 		buildoptions { "-std=c++11" }
 
 project "Box2D"
-	kind "StaticLib"
+	kind "SharedLib"
 	language "C++"
 	files { "Box2D/**.h", "Box2D/**.cpp" }
 	includedirs { "." }
@@ -107,7 +107,7 @@ project "GLFW"
 		}
 
 project "IMGUI"
-	kind "StaticLib"
+	kind "SharedLib"
 	language "C++"
 	defines { "GLEW_STATIC" }
 	files { "imgui/*.h", "imgui/*.cpp" }
@@ -129,6 +129,16 @@ project "Testbed"
 	files { "Testbed/**.h", "Testbed/**.cpp" }
 	includedirs { "." }
 	links { "Box2D", "GLFW", "IMGUI"}
+
+project "Testbed_lib"
+	kind "SharedLib"
+	language "C++"
+	defines { "GLEW_STATIC" }
+	files { "Testbed/**.h", "Testbed/**.cpp" }
+	includedirs { "." }
+	links { "Box2D", "IMGUI"}
+	configuration { "not windows", "not macosx" }
+    links { "glfw", "GLEW" }
 	configuration { "windows" }
 		links { "GLEW", "glu32", "opengl32", "winmm" }
 	configuration { "macosx" }

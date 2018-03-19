@@ -18,23 +18,40 @@ class MyBounds(object):
     tmin = bool(np.all(x >= self.xmin))
     return tmax and tmin
 
-def get_prog_path():
+def get_prog_path_name(name):
   script_path = os.path.abspath(os.path.dirname(__file__))
-  script2prog = os.path.join("Build", "gmake", "bin", "Release", "Testbed")
+  script2prog = os.path.join("Build", "gmake", "bin", "Debug", name)
   return os.path.join(script_path, script2prog)
+
+def get_prog_path():
+  return get_prog_path_name("Testbed")
+
+def get_lib_path():
+  return get_prog_path_name("libTestbed_lib.so")
 
 def run_prog_process(args):
   return list(map(float, subprocess.check_output([get_prog_path()] + args).strip().split()))
 
 import ctypes
-prog_lib = ctypes.cdll.LoadLibrary(get_prog_path())
+#prog_lib = ctypes.cdll.LoadLibrary(get_lib_path())
+prog_lib = ctypes.CDLL(get_lib_path())
+prog_lib.my_func.restype = np.ctypeslib.ndpointer(dtype=ctypes.c_float, shape=(2,))
 
 def run_prog_lib(args):
   argc = len(args) + 1
-  argv = ["asdf"] + args
-  prog_lib.main(argc, argv)
+  argv_l = ["asdf"] + args
 
-run_prog = run_prog_process
+  argv_type = ctypes.POINTER(ctypes.POINTER(ctypes.c_char))
+  ret_type = ctypes.c_float * 2
+
+  argv = (ctypes.POINTER(ctypes.c_char) * (argc + 1))()
+  for i, arg in enumerate(argv_l):
+    argv[i] = ctypes.create_string_buffer(arg.encode())
+
+  rets = prog_lib.my_func(argc, argv)
+  return rets[0], rets[1]
+
+run_prog = run_prog_lib
 
 def go_right(x, y):
   return -x
@@ -160,4 +177,4 @@ if __name__ == "__main__":
   print("Mean is", result_mean)
   print("Stddev is", result_stddev)
   print("Avg time is", total_time / args.exp_iters)
-  run_prog(['1'] + strres)
+  run_prog_process(['1'] + strres)
