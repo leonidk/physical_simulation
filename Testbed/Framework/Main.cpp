@@ -30,9 +30,11 @@
 
 #include "glfw/glfw3.h"
 #include <stdio.h>
+
+#include <algorithm>
 #include <iostream>
 #include <string>
-#include <algorithm>
+#include <vector>
 
 #ifdef _MSC_VER
 #define snprintf _snprintf
@@ -65,7 +67,7 @@ namespace
 	b2Vec2 lastp;
 }
 
-float rets[2];
+std::vector<float> positions;
 
 //
 static void sCreateUI(GLFWwindow *window)
@@ -558,7 +560,10 @@ extern "C" float *my_func(int argc, char **argv)
 	auto xMax = 40.0f;
 	auto yMin = 0.26f;
 	auto yMax = 50.0f;
-	auto vMin = 0.3f;
+	auto vMin = 2.0f;
+
+  positions.clear();
+  positions.push_back(0.0);
 
 	for (int i = 0; run_loop; i++)
 	{
@@ -581,6 +586,9 @@ extern "C" float *my_func(int argc, char **argv)
 
 			glEnable(GL_DEPTH_TEST);
 		}
+
+    positions.push_back(settings.p1.x);
+    positions.push_back(settings.p1.y);
 
 		test->Step(&settings);
 
@@ -634,13 +642,13 @@ extern "C" float *my_func(int argc, char **argv)
 		glfwTerminate();
 	}
 
-  rets[0] = settings.p1.x;
-  rets[1] = settings.p1.y;
-  return rets;
+  positions[0] = positions.size() - 1;
+  return positions.data();
 }
 
 int main(int argc, char **argv) {
   float *rets =  my_func(argc, argv);
-	printf("%f %f\n", rets[0], rets[1]);
+  auto size = positions.size();
+	printf("%f %f\n", positions[size - 2], positions[size - 1]);
   return 0;
 }

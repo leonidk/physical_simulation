@@ -40,9 +40,18 @@ class BulletTest : public Test
 			bd.position.Set(m_x, 10.0f);
 			bd.bullet = true;
 
+      b2FixtureDef fd;
+
+      fd.shape = &shape;
+      fd.friction = 0.2;
+      fd.restitution = 0.00;
+      fd.density = 100.0f;
+
+
 			m_bullet = m_world->CreateBody(&bd);
-			auto fix = m_bullet->CreateFixture(&shape, 100.0f);
-			fix->SetRestitution(0.0);
+			//auto fix = m_bullet->CreateFixture(&shape, 100.0f);
+      m_bullet->CreateFixture(&fd);
+      m_bullet->SetFixedRotation(true);
 
 			m_bullet->SetLinearVelocity(b2Vec2(0.0f, -1.0f));
 		}
@@ -76,20 +85,29 @@ class BulletTest : public Test
 		b2BodyDef bd;
 
 		b2PolygonShape box;
-		for(int i=0; i < settings->bodies.size(); i++) {
+		for (int i = 0; i < settings->bodies.size(); i++) {
+      b2FixtureDef fd;
+
+      fd.shape = &box;
+      fd.friction = 0.2;
+      fd.restitution = 0.45;
+      fd.density = 1.0f;
+
 			bd.position.Set(0.0f, 0.0f);
 			bd.angle = 0.0;
 			box.SetAsBox(settings->sizes[i].x, settings->sizes[i].y);
 			m_bodies[i] = m_world->CreateBody(&bd);
-			auto fix = m_bodies[i]->CreateFixture(&box, 1.0f);
-			fix->SetRestitution(0.75);
+      m_bodies[i]->CreateFixture(&fd);
+			//auto fix = m_bodies[i]->CreateFixture(&box, 1.0f);
+      //a
+			//fix->SetRestitution(0.75);
 
 			m_bodies[i]->SetTransform(settings->bodies[i], settings->rotations[i]);
 			m_bodies[i]->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
 			m_bodies[i]->SetAngularVelocity(0.0f);
 		}
 		m_bullet->SetTransform(b2Vec2(-30.0f, 40.0f), 0.0f);
-		m_bullet->SetLinearVelocity(b2Vec2(0.0f, -1.0f));
+		m_bullet->SetLinearVelocity(b2Vec2(0.0f, -2.2f));
 		m_bullet->SetAngularVelocity(0.0f);
 	}
 	void Step(Settings *settings)

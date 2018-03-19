@@ -28,7 +28,7 @@ def get_prog_path():
 
 def get_lib_path():
   from sys import platform
-  return get_prog_path_name("libTestbed_lib" + '.dylib' if platform == "darwin" else '.so')
+  return get_prog_path_name("libTestbed_lib" + ('.dylib' if platform == "darwin" else '.so'))
 
 def run_prog_process(args):
   return list(map(float, subprocess.check_output([get_prog_path()] + args).strip().split()))
@@ -36,7 +36,6 @@ def run_prog_process(args):
 import ctypes
 #prog_lib = ctypes.cdll.LoadLibrary(get_lib_path())
 prog_lib = ctypes.CDLL(get_lib_path())
-prog_lib.my_func.restype = np.ctypeslib.ndpointer(dtype=ctypes.c_float, shape=(2,))
 
 def run_prog_lib(args):
   argc = len(args) + 1
@@ -49,17 +48,21 @@ def run_prog_lib(args):
   for i, arg in enumerate(argv_l):
     argv[i] = ctypes.create_string_buffer(arg.encode())
 
+  prog_lib.my_func.restype = ctypes.POINTER(ctypes.c_float)
   rets = prog_lib.my_func(argc, argv)
-  return rets[0], rets[1]
+  size = int(round(np.ctypeslib.as_array(rets, shape=(1,))[0]))
+  positions = np.frombuffer((ctypes.c_float * (size + 1)).from_address(ctypes.addressof(rets.contents)), np.float32).copy()
+  return positions[1:]
 
-def go_right(x, y):
-  return -x
+def go_right(positions):
+  return -positions[-2]
 
 cost_part_3 = go_right
 
 box_x = 10
 box_y = 10.5
-def cost_part_4(x, y):
+def cost_part_4(positions):
+  x, y = positions[-2], positions[-1]
   return (x - box_x) ** 2 + (y - box_y) ** 2
 
 def get_params_part_3(x):
@@ -70,9 +73,9 @@ def get_params_part_4(x):
     box_x, box_y - 0.6, 0, 1.0, 0.4,
     box_x + 1.4, box_y, 0, 0.4, 1.0,
     box_x - 1.4, box_y, 0, 0.4, 1.0,
-    x[0], x[1], x[2] / 10, 5.0, 0.4,
-    x[3], x[4], x[5] / 10, 5.0, 0.4,
-    x[6], x[7], x[8] / 10, 5.0, 0.4
+    x[0], x[1], x[2] / 10, 5.0, 0.8,
+    x[3], x[4], x[5] / 10, 5.0, 0.8,
+    x[6], x[7], x[8] / 10, 5.0, 0.8
   ))
 
 def get_bounds_part_3():
@@ -88,8 +91,8 @@ def fdlib(*args):
 
 def f(x, *args):
   real_x = get_params(x)
-  ball_x, ball_y = run_prog_lib(['0'] + list(map(str, real_x)))
-  cost = cost_function(ball_x, ball_y)
+  positions = run_prog_lib(['0'] + list(map(str, real_x)))
+  cost = cost_function(positions)
 
   return cost
 
