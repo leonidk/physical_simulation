@@ -57,7 +57,7 @@ The parameters optimized over were acceleration due to gravity, the friction coe
 
 <img src="images/part_5_1.gif?raw=true">
 <img src="images/part_5_2.gif?raw=true">
-<img src="images/part_5_3.gif?raw=true">
+<img src="images/part_5_3_small.gif?raw=true">
 
 ## Part 6 & 7
 
