@@ -9,7 +9,7 @@ We found bubble ball to be somewhat fun. We got through a few levels.
 <img src="images/rotate_bball.jpg?raw=true">
 
 ## Part 2
-We've decided to work on Box2D (which this repository is a fork of). We have fixed the common Ubuntu "GLSL 3.3 not supported" error that the normal Box2D repository has. Additionally we made our simulation a shared library so we could load it in our Python optimizer without having to reload the executable. This greatly (by a factor of 60) decreased our runtime for these simple simulations (the numbers in the table are the old execution numbers).
+We've decided to work on Box2D (which this repository is a fork of). This is a 2D physics engines commonly used [in games](https://en.wikipedia.org/wiki/Box2D). We have fixed the common Ubuntu "GLSL 3.3 not supported" error that the normal Box2D repository has. Additionally we made our simulation a shared library so we could load it in our Python optimizer without having to reload the executable. This greatly (by a factor of 60) decreased our runtime for these simple simulations (the numbers in the table are the old execution numbers). Box2D's technical methods are well documented in a series of GDC talks, [available online](http://box2d.org/downloads/).
 
 ## Part 3
 We use a coefficent of restitution of 0.75. And implemented many approaches, inlcuding random search. We found that gradient based methods were not useful as their performance greatly depended on their initalization -- if the ball wasn't going to impact the obstacle in either the original evaluations or the numerical gradient offsets, then there was zero gradient and the solvers immediately exited. Random parameter search was very effective, tending to produce good solutions in a competitive timeframe. CMA and Differential Evolution produced good solutions. 
@@ -78,3 +78,13 @@ python optimize.py --part 4 cma --exp_iters 5 --opt_iters 30000
 python optimize.py --part 5 differential_evolution --opt_iters 750
 python optimize.py --part 6 random --opt_iters 20000
 ```
+
+## References
+1. Wolpert, D. H., & Macready, W. G. (1997). No free lunch theorems for optimization. IEEE Transactions on Evolutionary Computation, 1(1), 67–82. https://doi.org/10.1109/4235.585893
+2. Shewchuk, J. R. (1994). An Introduction to the Conjugate Gradient Method Without the Agonizing Pain. Science, 49(CS-94-125), 64. https://doi.org/10.1.1.110.418
+3. Catto, E. (2005). Iterative dynamics with temporal coherence. Game Developer Conference, 1–24. Retrieved from http://box2d.org/files/GDC2005/IterativeDynamics.pdf
+4. Storn, R., & Price, K. (1997). Differential Evolution - A simple and efficient adaptive scheme for global optimization over continuous spaces. Journal of Global Optimization, 11(4), 341–359. https://doi.org/10.1023/A:1008202821328
+5. Malherbe, C., & Vayatis, N. (2017). Global optimization of Lipschitz functions. Retrieved from http://arxiv.org/abs/1703.02628
+6. Powell, M. (2009). The BOBYQA algorithm for bound constrained optimization without derivatives. NA Report NA2009/06, 39. https://doi.org/10.1.1.443.7693
+7. Powell, M. J. D. (2007). A view of algorithms for optimization without derivatives. Mathematics Today-Bulletin of the Institute of …, 43(5), 1–12. Retrieved from http://www.damtp.cam.ac.uk/user/na/NA_papers/NA2007_03.pdf
+8. Hansen, N., Müller, S. D., & Koumoutsakos, P. (2003). Reducing the time complexity of the derandomized evolution strategy with covariance matrix adaptation (CMA-ES). Evolutionary computation, 11(1), 1-18.
