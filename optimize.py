@@ -78,15 +78,19 @@ def cost_part_5(positions):
   assert len(positions) % 2 == 0
   positions = np.reshape(positions, (len(positions) // 2, 2))
 
+  # Cutting
+  vels = np.sum(np.abs(np.diff(positions)), axis=1)
   pos_errs = np.sum((positions - box_5) ** 2, axis=1)
-  first_box_ind = (pos_errs < 1.0).nonzero()[0]
+  first_box_ind = (np.logical_and((pos_errs < 1.0), (vels < 0.3))).nonzero()[0]
   if len(first_box_ind):
     positions = positions[:, :first_box_ind[0]]
 
+  # Scaling
   start = positions[0, :]
   end = np.array((box_x_5, box_y_5))
   scaled_traj = traj * (end - start) + start
 
+  # Interpolation
   pos_interped1 = np.interp(np.linspace(0, 1, len(scaled_traj)), np.linspace(0, 1, len(positions)), positions[:, 0])
   pos_interped2 = np.interp(np.linspace(0, 1, len(scaled_traj)), np.linspace(0, 1, len(positions)), positions[:, 1])
   pos_interped = np.vstack((pos_interped1, pos_interped2)).T
@@ -95,8 +99,8 @@ def cost_part_5(positions):
   traj_interped2 = np.interp(np.linspace(0, 1, len(positions)), np.linspace(0, 1, len(scaled_traj)), scaled_traj[:, 1])
   traj_interped = np.vstack((traj_interped1, traj_interped2)).T
 
-  traj_weights = np.linspace(1, 0.01, len(traj_interped)) ** 2
-  pos_weights = np.linspace(1, 0.01, len(pos_interped)) ** 2
+  traj_weights = np.linspace(1, 0.04, len(traj_interped)) ** 2
+  pos_weights = np.linspace(1, 0.04, len(pos_interped)) ** 2
   return np.mean(((pos_interped - scaled_traj) ** 2).T * pos_weights) + \
          np.mean(((traj_interped - positions) ** 2).T * traj_weights)
 
