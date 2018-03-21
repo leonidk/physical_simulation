@@ -436,31 +436,27 @@ extern "C" float *my_func(int argc, char **argv)
   settings.rotations.clear();
   settings.sizes.clear();
 
-	if(argc < 2)
-		return NULL;
-	else
-		doGUI = std::atoi(argv[1]);
+  doGUI = argc > 1 ? std::atoi(argv[1]) : 1;
+  settings.gravity = argc > 2 ? std::atof(argv[2]) : -100;
+  settings.friction = argc > 3 ? std::atof(argv[3]) : 0.2;
+  settings.rest = argc > 4 ? std::atof(argv[4]) : 0.75;
 
-  settings.gravity = std::atof(argv[2]);
-  settings.friction = std::atof(argv[3]);
-  settings.rest = std::atof(argv[4]);
-	
   int skip = 5;
 	for (int i = skip; i < argc; i++){
 		auto idx = (i - skip) % 6;
-		if(idx == 0){
+		if (idx == 0){
 			settings.bodies.push_back({0.0,0.0});
 			settings.rotations.push_back({0.0});
 			settings.sizes.push_back({1.0,0.1});
       settings.gravity_on.push_back(false);
 			settings.bodies[settings.bodies.size()-1].x = std::atof(argv[i]);
-		} else if(idx == 1){
+		} else if (idx == 1){
 			settings.bodies[settings.bodies.size()-1].y = std::atof(argv[i]);
-		} else if(idx == 2){
+		} else if (idx == 2){
 			settings.rotations[settings.bodies.size()-1] = std::atof(argv[i]);
-		} else if(idx == 3){
+		} else if (idx == 3){
 			settings.sizes[settings.bodies.size()-1].x = std::atof(argv[i]);
-		} else if(idx == 4){
+		} else if (idx == 4){
 			settings.sizes[settings.bodies.size()-1].y = std::atof(argv[i]);
 		} else if (idx == 5) {
       settings.gravity_on[settings.bodies.size()-1] = std::atoi(argv[i]);
