@@ -16,16 +16,16 @@ We use a coefficent of restitution of 0.75. And implemented many approaches, inl
 
 | Optimizer | Runtime (ms) | Best | Mean | Std Dev |
 |-------------------------------|--------------|-------|------|---------|
-| CMA-ES (n=100) | 168 | -14.0 | 18.4 | 17.7 |
+| [CMA-ES](https://github.com/CMA-ES/pycma) (n=100) | 168 | -14.0 | 18.4 | 17.7 |
 | CMA-ES (n=1000) | 318 | -15.1 | 12.5 | 21.4 |
 | CMA-ES (n=1,popsize=80) | 60000 | -15.5 | None | None |
-| Random (n=10) | 57 | -7.4 | 26.9 | 8.3 |
+| [Random](https://en.wikipedia.org/wiki/Uniform_distribution_\(continuous\)) (n=10) | 57 | -7.4 | 26.9 | 8.3 |
 | Random (n=100) | 575 | -12.4 | 13.9 | 14.5 |
-| Conjugate Gradient (eps=1e-1) | 92 | -6.6 | 29.5 | 4.7 |
+| [Conjugate Gradient](https://www.cs.cmu.edu/~quake-papers/painless-conjugate-gradient.pdf) (eps=1e-1) | 92 | -6.6 | 29.5 | 4.7 |
 | Conjugate Gradient (eps=1e-8) | 50 | 30.0 | 30.1 | 1.0 |
-| SLSQP (eps=1e-1) | 45 | -8.1 | 29.6 | 3.8 |
+| [SLSQP](https://en.wikipedia.org/wiki/Sequential_quadratic_programming) (eps=1e-1) | 45 | -8.1 | 29.6 | 3.8 |
 | SLSQP (eps=1e-8) | 30 | 17.0 | 30.0 | 1.7 |
-| Diff Evolution (n=10) | 1970 | -14.7 | 6.4 | 18.1 |
+| [Diff Evolution](https://en.wikipedia.org/wiki/Differential_evolution) (n=10) | 1970 | -14.7 | 6.4 | 18.1 |
 | Diff Evolution (n=100) | 59618 | -15.4 | 6.1 | 21.0 |
 | [MaxLIPO](http://blog.dlib.net/2017/12/a-global-optimization-algorithm-worth.html) | 60000 | -14.2 | None | None |
 
