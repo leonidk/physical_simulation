@@ -32,19 +32,20 @@ class BulletTest : public Test
 			bd.type = b2_dynamicBody;
 			bd.position.Set(0.0f, 4.0f);
 
-      b2PolygonShape shape;
-			//b2CircleShape shape;
-      float rad = 0.25;
-      int n = 12;
-      b2Vec2 points[n];
-      for (int i = 0; i < n; i++) {
-        points[i].x = rad * std::sin(2.0 * M_PI * (float(i) / n));
-        points[i].y = rad * std::cos(2.0 * M_PI * (float(i) / n));
-      }
+      //b2PolygonShape shape;
+      //float rad = 0.25;
+      //int n = 12;
+      //b2Vec2 points[n];
+      //for (int i = 0; i < n; i++) {
+      //  points[i].x = rad * std::sin(2.0 * M_PI * (float(i) / n));
+      //  points[i].y = rad * std::cos(2.0 * M_PI * (float(i) / n));
+      //}
+      //
+      //shape.Set(points, n);
 
-      shape.Set(points, n);
+			b2CircleShape shape;
+			shape.m_radius = 0.25f;
 
-			//shape.m_radius = 0.25f;
 			//m_x = RandomFloat(-1.0f, 1.0f);
 			m_x = 0.20352793f;
 			bd.position.Set(m_x, 10.0f);
@@ -55,7 +56,7 @@ class BulletTest : public Test
       fd.shape = &shape;
       fd.friction = 1.0;
       fd.restitution = 0.00;
-      fd.density = 100.0f;
+      fd.density = 1.0f;
 
 
 			m_bullet = m_world->CreateBody(&bd);
@@ -91,11 +92,16 @@ class BulletTest : public Test
 	{
     m_world->SetGravity(b2Vec2(0.0f, settings->gravity));
 		m_bodies.resize(settings->bodies.size());
-		b2BodyDef bd;
+    b2BodyDef bd;
 
 		b2PolygonShape box;
 		for (int i = 0; i < settings->bodies.size(); i++) {
       b2FixtureDef fd;
+
+      bd.type = b2_staticBody;
+      if (settings->gravity_on[i]) {
+        bd.type = b2_dynamicBody;
+      }
 
       fd.shape = &box;
       fd.friction = settings->friction;
@@ -118,6 +124,7 @@ class BulletTest : public Test
 		m_bullet->SetTransform(b2Vec2(-30.0f, 40.0f), 0.0f);
 		//m_bullet->SetLinearVelocity(b2Vec2(2.2f, 0.0f));
 		m_bullet->SetLinearVelocity(b2Vec2(3.0f, -1.0f));
+		//m_bullet->SetLinearVelocity(b2Vec2(20.0f, 0.0f));
 		m_bullet->SetAngularVelocity(0.0f);
 	}
 	void Step(Settings *settings)

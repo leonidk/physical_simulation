@@ -107,10 +107,14 @@ struct Settings
 	std::vector<b2Vec2> bodies;
 	std::vector<float> rotations;
 	std::vector<b2Vec2> sizes;
+	std::vector<bool> gravity_on;
 
 	b2Vec2 p1;
 	b2Vec2 v1;
 
+  float gravity;
+  float friction;
+  float rest;
 };
 
 struct TestEntry

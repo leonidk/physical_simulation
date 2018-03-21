@@ -447,11 +447,12 @@ extern "C" float *my_func(int argc, char **argv)
 	
   int skip = 5;
 	for (int i = skip; i < argc; i++){
-		auto idx = (i - skip) % 5;
+		auto idx = (i - skip) % 6;
 		if(idx == 0){
 			settings.bodies.push_back({0.0,0.0});
 			settings.rotations.push_back({0.0});
 			settings.sizes.push_back({1.0,0.1});
+      settings.gravity_on.push_back(false);
 			settings.bodies[settings.bodies.size()-1].x = std::atof(argv[i]);
 		} else if(idx == 1){
 			settings.bodies[settings.bodies.size()-1].y = std::atof(argv[i]);
@@ -461,7 +462,9 @@ extern "C" float *my_func(int argc, char **argv)
 			settings.sizes[settings.bodies.size()-1].x = std::atof(argv[i]);
 		} else if(idx == 4){
 			settings.sizes[settings.bodies.size()-1].y = std::atof(argv[i]);
-		}
+		} else if (idx == 5) {
+      settings.gravity_on[settings.bodies.size()-1] = std::atoi(argv[i]);
+    }
 
 	}
 
@@ -570,7 +573,7 @@ extern "C" float *my_func(int argc, char **argv)
   positions.clear();
   positions.push_back(0.0);
 
-	for (int i = 0; run_loop && i < 750; i++)
+	for (int i = 0; run_loop && (i < 750 || doGUI); i++)
 	{
 		if (doGUI)
 		{
