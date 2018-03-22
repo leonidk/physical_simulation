@@ -19,7 +19,7 @@
 #include "Test.h"
 #include <stdio.h>
 
-void DestructionListener::SayGoodbye(b2Joint* joint)
+void DestructionListener::SayGoodbye(b2Joint *joint)
 {
 	if (test->m_mouseJoint == joint)
 	{
@@ -45,7 +45,7 @@ Test::Test()
 	m_world->SetDestructionListener(&m_destructionListener);
 	m_world->SetContactListener(this);
 	m_world->SetDebugDraw(&g_debugDraw);
-	
+
 	m_bombSpawning = false;
 
 	m_stepCount = 0;
@@ -64,17 +64,17 @@ Test::~Test()
 	m_world = NULL;
 }
 
-void Test::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
+void Test::PreSolve(b2Contact *contact, const b2Manifold *oldManifold)
 {
-	const b2Manifold* manifold = contact->GetManifold();
+	const b2Manifold *manifold = contact->GetManifold();
 
 	if (manifold->pointCount == 0)
 	{
 		return;
 	}
 
-	b2Fixture* fixtureA = contact->GetFixtureA();
-	b2Fixture* fixtureB = contact->GetFixtureB();
+	b2Fixture *fixtureA = contact->GetFixtureA();
+	b2Fixture *fixtureB = contact->GetFixtureB();
 
 	b2PointState state1[b2_maxManifoldPoints], state2[b2_maxManifoldPoints];
 	b2GetPointStates(state1, state2, oldManifold, manifold);
@@ -84,7 +84,7 @@ void Test::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 
 	for (int32 i = 0; i < manifold->pointCount && m_pointCount < k_maxContactPoints; ++i)
 	{
-		ContactPoint* cp = m_points + m_pointCount;
+		ContactPoint *cp = m_points + m_pointCount;
 		cp->fixtureA = fixtureA;
 		cp->fixtureB = fixtureB;
 		cp->position = worldManifold.points[i];
@@ -99,22 +99,22 @@ void Test::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 
 void Test::DrawTitle(const char *string)
 {
-    g_debugDraw.DrawString(5, DRAW_STRING_NEW_LINE, string);
-    m_textLine = 3 * DRAW_STRING_NEW_LINE;
+	g_debugDraw.DrawString(5, DRAW_STRING_NEW_LINE, string);
+	m_textLine = 3 * DRAW_STRING_NEW_LINE;
 }
 
 class QueryCallback : public b2QueryCallback
 {
-public:
-	QueryCallback(const b2Vec2& point)
+  public:
+	QueryCallback(const b2Vec2 &point)
 	{
 		m_point = point;
 		m_fixture = NULL;
 	}
 
-	bool ReportFixture(b2Fixture* fixture) override
+	bool ReportFixture(b2Fixture *fixture) override
 	{
-		b2Body* body = fixture->GetBody();
+		b2Body *body = fixture->GetBody();
 		if (body->GetType() == b2_dynamicBody)
 		{
 			bool inside = fixture->TestPoint(m_point);
@@ -132,13 +132,13 @@ public:
 	}
 
 	b2Vec2 m_point;
-	b2Fixture* m_fixture;
+	b2Fixture *m_fixture;
 };
 
-void Test::MouseDown(const b2Vec2& p)
+void Test::MouseDown(const b2Vec2 &p)
 {
 	m_mouseWorld = p;
-	
+
 	if (m_mouseJoint != NULL)
 	{
 		return;
@@ -157,24 +157,24 @@ void Test::MouseDown(const b2Vec2& p)
 
 	if (callback.m_fixture)
 	{
-		b2Body* body = callback.m_fixture->GetBody();
+		b2Body *body = callback.m_fixture->GetBody();
 		b2MouseJointDef md;
 		md.bodyA = m_groundBody;
 		md.bodyB = body;
 		md.target = p;
 		md.maxForce = 1000.0f * body->GetMass();
-		m_mouseJoint = (b2MouseJoint*)m_world->CreateJoint(&md);
+		m_mouseJoint = (b2MouseJoint *)m_world->CreateJoint(&md);
 		body->SetAwake(true);
 	}
 }
 
-void Test::SpawnBomb(const b2Vec2& worldPt)
+void Test::SpawnBomb(const b2Vec2 &worldPt)
 {
 	m_bombSpawnPoint = worldPt;
 	m_bombSpawning = true;
 }
-    
-void Test::CompleteBombSpawn(const b2Vec2& p)
+
+void Test::CompleteBombSpawn(const b2Vec2 &p)
 {
 	if (m_bombSpawning == false)
 	{
@@ -184,14 +184,14 @@ void Test::CompleteBombSpawn(const b2Vec2& p)
 	const float multiplier = 30.0f;
 	b2Vec2 vel = m_bombSpawnPoint - p;
 	vel *= multiplier;
-	LaunchBomb(m_bombSpawnPoint,vel);
+	LaunchBomb(m_bombSpawnPoint, vel);
 	m_bombSpawning = false;
 }
 
-void Test::ShiftMouseDown(const b2Vec2& p)
+void Test::ShiftMouseDown(const b2Vec2 &p)
 {
 	m_mouseWorld = p;
-	
+
 	if (m_mouseJoint != NULL)
 	{
 		return;
@@ -200,24 +200,24 @@ void Test::ShiftMouseDown(const b2Vec2& p)
 	SpawnBomb(p);
 }
 
-void Test::MouseUp(const b2Vec2& p)
+void Test::MouseUp(const b2Vec2 &p)
 {
 	if (m_mouseJoint)
 	{
 		m_world->DestroyJoint(m_mouseJoint);
 		m_mouseJoint = NULL;
 	}
-	
+
 	if (m_bombSpawning)
 	{
 		CompleteBombSpawn(p);
 	}
 }
 
-void Test::MouseMove(const b2Vec2& p)
+void Test::MouseMove(const b2Vec2 &p)
 {
 	m_mouseWorld = p;
-	
+
 	if (m_mouseJoint)
 	{
 		m_mouseJoint->SetTarget(p);
@@ -231,7 +231,7 @@ void Test::LaunchBomb()
 	LaunchBomb(p, v);
 }
 
-void Test::LaunchBomb(const b2Vec2& position, const b2Vec2& velocity)
+void Test::LaunchBomb(const b2Vec2 &position, const b2Vec2 &velocity)
 {
 	if (m_bomb)
 	{
@@ -245,7 +245,7 @@ void Test::LaunchBomb(const b2Vec2& position, const b2Vec2& velocity)
 	bd.bullet = true;
 	m_bomb = m_world->CreateBody(&bd);
 	m_bomb->SetLinearVelocity(velocity);
-	
+
 	b2CircleShape circle;
 	circle.m_radius = 0.3f;
 
@@ -253,10 +253,10 @@ void Test::LaunchBomb(const b2Vec2& position, const b2Vec2& velocity)
 	fd.shape = &circle;
 	fd.density = 20.0f;
 	fd.restitution = 0.0f;
-	
-	b2Vec2 minV = position - b2Vec2(0.3f,0.3f);
-	b2Vec2 maxV = position + b2Vec2(0.3f,0.3f);
-	
+
+	b2Vec2 minV = position - b2Vec2(0.3f, 0.3f);
+	b2Vec2 maxV = position + b2Vec2(0.3f, 0.3f);
+
 	b2AABB aabb;
 	aabb.lowerBound = minV;
 	aabb.upperBound = maxV;
@@ -264,11 +264,11 @@ void Test::LaunchBomb(const b2Vec2& position, const b2Vec2& velocity)
 	m_bomb->CreateFixture(&fd);
 }
 
-void Test::Setup(Settings* settings)
+void Test::Setup(Settings *settings)
 {
 }
 
-void Test::Step(Settings* settings)
+void Test::Step(Settings *settings)
 {
 	float32 timeStep = settings->hz > 0.0f ? 1.0f / settings->hz : float32(0.0f);
 
@@ -283,16 +283,18 @@ void Test::Step(Settings* settings)
 			timeStep = 0.0f;
 		}
 
-		if(settings->doGUI) g_debugDraw.DrawString(5, m_textLine, "****PAUSED****");
+		if (settings->doGUI)
+			g_debugDraw.DrawString(5, m_textLine, "****PAUSED****");
 		m_textLine += DRAW_STRING_NEW_LINE;
 	}
 
 	uint32 flags = 0;
-	flags += settings->drawShapes			* b2Draw::e_shapeBit;
-	flags += settings->drawJoints			* b2Draw::e_jointBit;
-	flags += settings->drawAABBs			* b2Draw::e_aabbBit;
-	flags += settings->drawCOMs				* b2Draw::e_centerOfMassBit;
-	if(settings->doGUI) g_debugDraw.SetFlags(flags);
+	flags += settings->drawShapes * b2Draw::e_shapeBit;
+	flags += settings->drawJoints * b2Draw::e_jointBit;
+	flags += settings->drawAABBs * b2Draw::e_aabbBit;
+	flags += settings->drawCOMs * b2Draw::e_centerOfMassBit;
+	if (settings->doGUI)
+		g_debugDraw.SetFlags(flags);
 
 	m_world->SetAllowSleeping(settings->enableSleep);
 	m_world->SetWarmStarting(settings->enableWarmStarting);
@@ -303,8 +305,10 @@ void Test::Step(Settings* settings)
 
 	m_world->Step(timeStep, settings->velocityIterations, settings->positionIterations);
 
-	if(settings->doGUI)m_world->DrawDebugData();
-    if(settings->doGUI)g_debugDraw.Flush();
+	if (settings->doGUI)
+		m_world->DrawDebugData();
+	if (settings->doGUI)
+		g_debugDraw.Flush();
 
 	if (timeStep > 0.0f)
 	{
@@ -329,7 +333,7 @@ void Test::Step(Settings* settings)
 
 	// Track maximum profile times
 	{
-		const b2Profile& p = m_world->GetProfile();
+		const b2Profile &p = m_world->GetProfile();
 		m_maxProfile.step = b2Max(m_maxProfile.step, p.step);
 		m_maxProfile.collide = b2Max(m_maxProfile.collide, p.collide);
 		m_maxProfile.solve = b2Max(m_maxProfile.solve, p.solve);
@@ -351,7 +355,7 @@ void Test::Step(Settings* settings)
 
 	if (settings->doGUI && settings->drawProfile)
 	{
-		const b2Profile& p = m_world->GetProfile();
+		const b2Profile &p = m_world->GetProfile();
 
 		b2Profile aveProfile;
 		memset(&aveProfile, 0, sizeof(b2Profile));
@@ -386,7 +390,7 @@ void Test::Step(Settings* settings)
 		m_textLine += DRAW_STRING_NEW_LINE;
 	}
 
-	if (settings->doGUI &&m_mouseJoint)
+	if (settings->doGUI && m_mouseJoint)
 	{
 		b2Vec2 p1 = m_mouseJoint->GetAnchorB();
 		b2Vec2 p2 = m_mouseJoint->GetTarget();
@@ -399,8 +403,8 @@ void Test::Step(Settings* settings)
 		c.Set(0.8f, 0.8f, 0.8f);
 		g_debugDraw.DrawSegment(p1, p2, c);
 	}
-	
-	if (settings->doGUI &&m_bombSpawning)
+
+	if (settings->doGUI && m_bombSpawning)
 	{
 		b2Color c;
 		c.Set(0.0f, 0.0f, 1.0f);
@@ -410,14 +414,14 @@ void Test::Step(Settings* settings)
 		g_debugDraw.DrawSegment(m_mouseWorld, m_bombSpawnPoint, c);
 	}
 
-	if (settings->doGUI &&settings->drawContactPoints)
+	if (settings->doGUI && settings->drawContactPoints)
 	{
 		const float32 k_impulseScale = 0.1f;
 		const float32 k_axisScale = 0.3f;
 
 		for (int32 i = 0; i < m_pointCount; ++i)
 		{
-			ContactPoint* point = m_points + i;
+			ContactPoint *point = m_points + i;
 
 			if (point->state == b2_addState)
 			{
@@ -454,7 +458,7 @@ void Test::Step(Settings* settings)
 	}
 }
 
-void Test::ShiftOrigin(const b2Vec2& newOrigin)
+void Test::ShiftOrigin(const b2Vec2 &newOrigin)
 {
 	m_world->ShiftOrigin(newOrigin);
 }

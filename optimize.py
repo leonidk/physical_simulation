@@ -69,7 +69,7 @@ traj = np.loadtxt(get_traj_file())
 traj[:, 1] = -traj[:, 1]
 traj = my_normalize(traj)
 
-box_x_5 = -15
+box_x_5 = -20
 box_y_5 = 25
 #box_x_5 = -20
 #box_y_5 = 30

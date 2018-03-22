@@ -54,17 +54,17 @@ struct UIState
 //
 namespace
 {
-	GLFWwindow *mainWindow = NULL;
-	UIState ui;
+GLFWwindow *mainWindow = NULL;
+UIState ui;
 
-	int32 testIndex = 0;
-	int32 testSelection = 0;
-	int32 testCount = 0;
-	TestEntry *entry;
-	Test *test;
-	Settings settings;
-	bool rightMouseDown;
-	b2Vec2 lastp;
+int32 testIndex = 0;
+int32 testSelection = 0;
+int32 testCount = 0;
+TestEntry *entry;
+Test *test;
+Settings settings;
+bool rightMouseDown;
+b2Vec2 lastp;
 }
 
 std::vector<float> positions;
@@ -432,36 +432,47 @@ void glfwErrorCallback(int error, const char *description)
 //
 extern "C" float *my_func(int argc, char **argv)
 {
-  settings.bodies.clear();
-  settings.rotations.clear();
-  settings.sizes.clear();
+	settings.bodies.clear();
+	settings.rotations.clear();
+	settings.sizes.clear();
 
-  doGUI = argc > 1 ? std::atoi(argv[1]) : 1;
-  settings.gravity = argc > 2 ? std::atof(argv[2]) : -100;
-  settings.friction = argc > 3 ? std::atof(argv[3]) : 0.2;
-  settings.rest = argc > 4 ? std::atof(argv[4]) : 0.75;
+	doGUI = argc > 1 ? std::atoi(argv[1]) : 1;
+	settings.gravity = argc > 2 ? std::atof(argv[2]) : -100;
+	settings.friction = argc > 3 ? std::atof(argv[3]) : 0.2;
+	settings.rest = argc > 4 ? std::atof(argv[4]) : 0.75;
 
-  int skip = 5;
-	for (int i = skip; i < argc; i++){
+	int skip = 5;
+	for (int i = skip; i < argc; i++)
+	{
 		auto idx = (i - skip) % 6;
-		if (idx == 0){
-			settings.bodies.push_back({0.0,0.0});
+		if (idx == 0)
+		{
+			settings.bodies.push_back({0.0, 0.0});
 			settings.rotations.push_back({0.0});
-			settings.sizes.push_back({1.0,0.1});
-      settings.gravity_on.push_back(false);
-			settings.bodies[settings.bodies.size()-1].x = std::atof(argv[i]);
-		} else if (idx == 1){
-			settings.bodies[settings.bodies.size()-1].y = std::atof(argv[i]);
-		} else if (idx == 2){
-			settings.rotations[settings.bodies.size()-1] = std::atof(argv[i]);
-		} else if (idx == 3){
-			settings.sizes[settings.bodies.size()-1].x = std::atof(argv[i]);
-		} else if (idx == 4){
-			settings.sizes[settings.bodies.size()-1].y = std::atof(argv[i]);
-		} else if (idx == 5) {
-      settings.gravity_on[settings.bodies.size()-1] = std::atoi(argv[i]);
-    }
-
+			settings.sizes.push_back({1.0, 0.1});
+			settings.gravity_on.push_back(false);
+			settings.bodies[settings.bodies.size() - 1].x = std::atof(argv[i]);
+		}
+		else if (idx == 1)
+		{
+			settings.bodies[settings.bodies.size() - 1].y = std::atof(argv[i]);
+		}
+		else if (idx == 2)
+		{
+			settings.rotations[settings.bodies.size() - 1] = std::atof(argv[i]);
+		}
+		else if (idx == 3)
+		{
+			settings.sizes[settings.bodies.size() - 1].x = std::atof(argv[i]);
+		}
+		else if (idx == 4)
+		{
+			settings.sizes[settings.bodies.size() - 1].y = std::atof(argv[i]);
+		}
+		else if (idx == 5)
+		{
+			settings.gravity_on[settings.bodies.size() - 1] = std::atoi(argv[i]);
+		}
 	}
 
 	//doGUI = std::atoi(argv[1]);
@@ -566,8 +577,8 @@ extern "C" float *my_func(int argc, char **argv)
 	auto yMax = 50.0f;
 	auto vMin = 0.3f;
 
-  positions.clear();
-  positions.push_back(0.0);
+	positions.clear();
+	positions.push_back(0.0);
 
 	for (int i = 0; run_loop && (i < 750 || doGUI); i++)
 	{
@@ -593,8 +604,8 @@ extern "C" float *my_func(int argc, char **argv)
 
 		test->Step(&settings);
 
-    positions.push_back(settings.p1.x);
-    positions.push_back(settings.p1.y);
+		positions.push_back(settings.p1.x);
+		positions.push_back(settings.p1.y);
 
 		if (doGUI)
 		{
@@ -645,13 +656,14 @@ extern "C" float *my_func(int argc, char **argv)
 		glfwTerminate();
 	}
 
-  positions[0] = positions.size() - 1;
-  return positions.data();
+	positions[0] = positions.size() - 1;
+	return positions.data();
 }
 
-int main(int argc, char **argv) {
-  float *rets =  my_func(argc, argv);
-  auto size = positions.size();
+int main(int argc, char **argv)
+{
+	float *rets = my_func(argc, argv);
+	auto size = positions.size();
 	printf("%f %f\n", positions[size - 2], positions[size - 1]);
-  return 0;
+	return 0;
 }

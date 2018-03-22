@@ -20,7 +20,7 @@
 #define BULLET_TEST_H
 
 #include <cmath>
-
+#define USE_NGON (1)
 class BulletTest : public Test
 {
   public:
@@ -31,38 +31,38 @@ class BulletTest : public Test
 			b2BodyDef bd;
 			bd.type = b2_dynamicBody;
 			bd.position.Set(0.0f, 4.0f);
+#if USE_NGON // use an ngon, has friction
+			b2PolygonShape shape;
+			float rad = 0.25;
+			int n = 8;
+			b2Vec2 points[n];
+			for (int i = 0; i < n; i++)
+			{
+				points[i].x = rad * std::sin(2.0 * M_PI * (float(i) / n));
+				points[i].y = rad * std::cos(2.0 * M_PI * (float(i) / n));
+			}
 
-      //b2PolygonShape shape;
-      //float rad = 0.25;
-      //int n = 12;
-      //b2Vec2 points[n];
-      //for (int i = 0; i < n; i++) {
-      //  points[i].x = rad * std::sin(2.0 * M_PI * (float(i) / n));
-      //  points[i].y = rad * std::cos(2.0 * M_PI * (float(i) / n));
-      //}
-      //
-      //shape.Set(points, n);
-
+			shape.Set(points, n);
+#else // use circle, has no friction
 			b2CircleShape shape;
 			shape.m_radius = 0.25f;
-
+#endif
 			//m_x = RandomFloat(-1.0f, 1.0f);
 			m_x = 0.20352793f;
 			bd.position.Set(m_x, 10.0f);
 			bd.bullet = true;
 
-      b2FixtureDef fd;
+			b2FixtureDef fd;
 
-      fd.shape = &shape;
-      fd.friction = 1.0;
-      fd.restitution = 0.00;
-      fd.density = 1.0f;
-
+			fd.shape = &shape;
+			fd.friction = 1.0;
+			fd.restitution = 0.00;
+			fd.density = 1.0f;
 
 			m_bullet = m_world->CreateBody(&bd);
 			//auto fix = m_bullet->CreateFixture(&shape, 100.0f);
-      m_bullet->CreateFixture(&fd);
-      //m_bullet->SetFixedRotation(true);
+			m_bullet->CreateFixture(&fd);
+			//m_bullet->SetFixedRotation(true);
 		}
 	}
 
@@ -90,31 +90,33 @@ class BulletTest : public Test
 
 	void Setup(Settings *settings)
 	{
-    m_world->SetGravity(b2Vec2(0.0f, settings->gravity));
+		m_world->SetGravity(b2Vec2(0.0f, settings->gravity));
 		m_bodies.resize(settings->bodies.size());
-    b2BodyDef bd;
+		b2BodyDef bd;
 
 		b2PolygonShape box;
-		for (int i = 0; i < settings->bodies.size(); i++) {
-      b2FixtureDef fd;
+		for (int i = 0; i < settings->bodies.size(); i++)
+		{
+			b2FixtureDef fd;
 
-      bd.type = b2_staticBody;
-      if (settings->gravity_on[i]) {
-        bd.type = b2_dynamicBody;
-      }
+			bd.type = b2_staticBody;
+			if (settings->gravity_on[i])
+			{
+				bd.type = b2_dynamicBody;
+			}
 
-      fd.shape = &box;
-      fd.friction = settings->friction;
-      fd.restitution = settings->rest;
-      fd.density = 1.0f;
+			fd.shape = &box;
+			fd.friction = settings->friction;
+			fd.restitution = settings->rest;
+			fd.density = 1.0f;
 
 			bd.position.Set(0.0f, 0.0f);
 			bd.angle = 0.0;
 			box.SetAsBox(settings->sizes[i].x, settings->sizes[i].y);
 			m_bodies[i] = m_world->CreateBody(&bd);
-      m_bodies[i]->CreateFixture(&fd);
+			m_bodies[i]->CreateFixture(&fd);
 			//auto fix = m_bodies[i]->CreateFixture(&box, 1.0f);
-      //a
+			//a
 			//fix->SetRestitution(0.75);
 
 			m_bodies[i]->SetTransform(settings->bodies[i], settings->rotations[i]);
@@ -167,8 +169,8 @@ class BulletTest : public Test
 		return new BulletTest;
 	}
 
-	std::vector<b2Body*> m_bodies;
-	int m_num=0;
+	std::vector<b2Body *> m_bodies;
+	int m_num = 0;
 	b2Body *m_bullet;
 	float32 m_x;
 };
