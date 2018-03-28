@@ -252,6 +252,7 @@ def method_cma():
   import cma
   x0 = np.array([x[0] + 0.5*(x[1]-x[0]) for x in bounds])
   es = cma.fmin(f, x0, 2.0, options={
+                              'verb_log': 0,
                               'popsize': 80,
                               #'tolfun': 1e-2,
                               'maxfevals': args.opt_iters,
