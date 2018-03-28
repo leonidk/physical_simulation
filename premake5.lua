@@ -23,7 +23,7 @@ workspace "Box2D"
 		buildoptions { "-std=c++11" }
 
 project "Box2D"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 	files { "Box2D/**.h", "Box2D/**.cpp" }
 	includedirs { "." }
@@ -107,7 +107,7 @@ project "GLFW"
 		}
 
 project "IMGUI"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 	defines { "GLEW_STATIC" }
 	files { "imgui/*.h", "imgui/*.cpp" }
@@ -129,6 +129,13 @@ project "Testbed"
 	files { "Testbed/**.h", "Testbed/**.cpp" }
 	includedirs { "." }
 	links { "Box2D", "GLFW", "IMGUI"}
+	configuration { "windows" }
+		links { "GLEW", "glu32", "opengl32", "winmm" }
+	configuration { "macosx" }
+		defines { "GLFW_INCLUDE_GLCOREARB" }
+		links { "OpenGL.framework", "Cocoa.framework", "IOKit.framework", "CoreFoundation.framework", "CoreVideo.framework"}
+	configuration { "linux" }
+		links { "GL", "GLU", "GLEW", "X11", "Xrandr", "Xinerama", "Xcursor", "pthread", "dl" }
 
 project "Testbed_lib"
 	kind "SharedLib"
@@ -136,13 +143,11 @@ project "Testbed_lib"
 	defines { "GLEW_STATIC" }
 	files { "Testbed/**.h", "Testbed/**.cpp" }
 	includedirs { "." }
-	links { "Box2D", "IMGUI"}
-	configuration { "not windows", "not macosx" }
-    links { "glfw", "GLEW" }
+	links { "Box2D", "GLFW", "IMGUI"}
 	configuration { "windows" }
 		links { "GLEW", "glu32", "opengl32", "winmm" }
 	configuration { "macosx" }
 		defines { "GLFW_INCLUDE_GLCOREARB" }
 		links { "OpenGL.framework", "Cocoa.framework", "IOKit.framework", "CoreFoundation.framework", "CoreVideo.framework"}
-	configuration { "gmake" }
+	configuration { "linux" }
 		links { "GL", "GLU", "GLEW", "X11", "Xrandr", "Xinerama", "Xcursor", "pthread", "dl" }
