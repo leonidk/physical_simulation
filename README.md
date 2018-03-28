@@ -90,6 +90,13 @@ python optimize.py --part 4 cma --exp_iters 5 --opt_iters 30000
 python optimize.py --part 5 differential_evolution --opt_iters 750
 python optimize.py --part 6 random --opt_iters 20000
 ```
+### Run scenario
+Testbed must be run from (root)/Testbed. First argument is 0 or 1, depending on if you want a GUI. Second argument is gravity. Third argument is friction. Fourth argument is restitution. Remaining arguments are x,y,rotation,width,height,gravity for as many obstacles as desired. x,y,width,height are in some unit space, rotation is radians, gravity is 0 or 1 depending on if the obstacle has gravity affecting it. Below is an example of running a GUI example, with gravity -35, friction 1.2, restitution 0.45, and 6 obstacles, none of which are affected by gravity, the last 3 of which are size 4.0 x 0.8. This is a solution to part 5. 
+```
+cd Testbed
+../Build/gmake/bin/Release/Testbed 1 -34.85626715903946 1.238121876473342 0.44576273535632255 -18.0 24.4 0.0 1.0 0.4 0.0 -16.6 25.0 0.0 0.4 1.0 0.0 -19.4 25.0 0.0 0.4 1.0 0.0 -26.79677592743783 38.72327400584704 2.8682675964696074 4.0 0.8 0.0 -25.364051735494193 31.469818162961424 2.8423437289880864 4.0 0.8 0.0 -20.494546879990814 35.45538455381046 0.3531818391015964 4.0 0.8 0.0
+```
+During optimization, we instead link against Testbed_lib and call this main(int argc, char* argv\[]) function directly with these arguements. The function returns a float array of x,y pairs for the ball trajectory. In the executable case, Testbed outputs this trajectory to standard out. Optimization can then feed any obstacles it desires and create any cost function it desires. 
 
 ## References
 1. Wolpert, D. H., & Macready, W. G. (1997). No free lunch theorems for optimization. IEEE Transactions on Evolutionary Computation, 1(1), 67–82. https://doi.org/10.1109/4235.585893
