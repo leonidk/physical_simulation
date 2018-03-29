@@ -81,6 +81,7 @@ make -j -l config=release
 cd ../../
 <now can run examples from root>
 ```
+If you experience an OpenGL error on Linux, try `export MESA_GL_VERSION_OVERRIDE=3.3`
 
 
 ### Examples
