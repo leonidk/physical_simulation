@@ -497,7 +497,7 @@ extern "C" float *my_func(int argc, char **argv)
 
 		char title[64];
 		sprintf(title, "Box2D Testbed Version %d.%d.%d", b2_version.major, b2_version.minor, b2_version.revision);
-
+#if defined(__APPLE__)
 		// Without these settings on macOS, OpenGL 2.1 will be used by default which will cause crashes at boot.
 		// This code is a slightly modified version of the code found here: http://www.glfw.org/faq.html#how-do-i-create-an-opengl-30-context
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -512,7 +512,7 @@ extern "C" float *my_func(int argc, char **argv)
 			glfwTerminate();
 			return NULL;
 		}
-
+#endif
 		glfwMakeContextCurrent(mainWindow);
 		//printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
 

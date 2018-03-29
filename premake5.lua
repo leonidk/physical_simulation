@@ -27,6 +27,7 @@ project "Box2D"
 	language "C++"
 	files { "Box2D/**.h", "Box2D/**.cpp" }
 	includedirs { "." }
+	buildoptions { "-fPIC -std=c++11" }
 
 project "GLEW"
 	kind "StaticLib"
@@ -34,6 +35,7 @@ project "GLEW"
 	defines { "GLEW_STATIC" }
 	files { "glew/*.h", "glew/*.c" }
 	includedirs { "." }
+	buildoptions { "-fPIC -std=c++11" }
 
 project "GLFW"
 	kind "StaticLib"
@@ -105,6 +107,7 @@ project "GLFW"
 			"glfw/glx_context.c",
 			"glfw/egl_context.c"
 		}
+	buildoptions { "-fPIC" }
 
 project "IMGUI"
 	kind "StaticLib"
@@ -112,6 +115,7 @@ project "IMGUI"
 	defines { "GLEW_STATIC" }
 	files { "imgui/*.h", "imgui/*.cpp" }
 	includedirs { "." }
+	buildoptions { "-fPIC -std=c++11" }
 	configuration { "macosx" }
 		defines { "GLFW_INCLUDE_GLCOREARB" }
 
@@ -121,6 +125,7 @@ project "HelloWorld"
 	files { "HelloWorld/HelloWorld.cpp" }
 	includedirs { "." }
 	links { "Box2D" }
+    buildoptions { "-std=c++11" }
 
 project "Testbed"
 	kind "ConsoleApp"
@@ -128,6 +133,7 @@ project "Testbed"
 	defines { "GLEW_STATIC" }
 	files { "Testbed/**.h", "Testbed/**.cpp" }
 	includedirs { "." }
+	buildoptions { "-std=c++11" }
 	links { "Box2D", "GLFW", "IMGUI"}
 	configuration { "windows" }
 		links { "GLEW", "glu32", "opengl32", "winmm" }
@@ -140,6 +146,7 @@ project "Testbed"
 project "Testbed_lib"
 	kind "SharedLib"
 	language "C++"
+	buildoptions { "-std=c++11" }
 	defines { "GLEW_STATIC" }
 	files { "Testbed/**.h", "Testbed/**.cpp" }
 	includedirs { "." }
