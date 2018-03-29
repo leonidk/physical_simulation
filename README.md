@@ -72,7 +72,7 @@ We implemented Bubble Ball Level 7. Below you can see that the simulation someti
 
 ## Example Usage
 
-We ran our experiments using Python 3.6 on both Mac OS X and Linux. Dependencies include numpy, scipy, and various other optimization packages if using their solvers (e.g. cma for CMA-ES and dlib for MaxLIPO). In order to run the code, you will need to build the Box2D Engine using premake5 with the gmake action and execute optimize.py.
+We ran our experiments using Python 3.6 on both Mac OS X and Linux. Dependencies include numpy, scipy, and various other optimization packages if using their solvers (e.g. cma for CMA-ES and dlib for MaxLIPO). In order to run the code, you will need to build the Box2D Engine using [premake5](https://premake.github.io/download.html) with the gmake action and execute optimize.py.
 ### Build
 ```
 premake5 gmake
