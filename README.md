@@ -57,9 +57,13 @@ Since Box2D doesn't model rolling friction, we model the ball as a regular polyg
 
 We've included a script with several valid solutions, which, if built with gmake, and run from the Testbed folder, are in `Testbed/do_part_5.sh`. The GIFs below are from an earlier version of our solver (which was using a circular ball and quadratic discount factors) which perform worse than the current formulation. In the original case, we required several times more solver timesteps, only differential evolution performed successfully, and the ball often bounced out of final target location. The current solver in the repository (as of 2018-03-18), and described above, performs far better and always finds an acceptable solution in our testing (~10 runs). 
 
+
 <img src="images/part_5_1.gif?raw=true">
 <img src="images/part_5_2.gif?raw=true">
 <img src="images/part_5_3_small.gif?raw=true">
+
+<img src="images/output.gif?raw=true">
+
 
 ## Part 6 & 7
 
