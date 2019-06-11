@@ -1,18 +1,13 @@
 # Using Function Optimization To Find Policies: Ball Run
-[CMU RI 16-745: Dynamic Optimization: Assignment 2](http://www.cs.cmu.edu/~cga/dynopt/ass2/)
+Work for [CMU RI 16-745: Dynamic Optimization](http://www.cs.cmu.edu/~cga/dynopt/)
 
 Leonid Keselman and Alex Spitzer
 
-## Part 1
-We found bubble ball to be somewhat fun. We got through a few levels. 
+## Simulation Environment
+We've decided to work on Box2D (which this repository is a fork of). This is a 2D physics engines commonly used [in games](https://en.wikipedia.org/wiki/Box2D). We have fixed the common Ubuntu "GLSL 3.3 not supported" error that the normal Box2D repository has. Additionally we made our simulation a shared library so we could load it in our Python optimizer without having to reload the executable. This greatly (by a factor of 60) decreased our runtime for these simple simulations (the numbers in the table are the old execution numbers). Box2D's technical methods are well documented in a series of GDC talks, [available online](http://box2d.org/downloads/). We use a coefficent of restitution of 0.75.
 
-<img src="images/rotate_bball.jpg?raw=true">
-
-## Part 2
-We've decided to work on Box2D (which this repository is a fork of). This is a 2D physics engines commonly used [in games](https://en.wikipedia.org/wiki/Box2D). We have fixed the common Ubuntu "GLSL 3.3 not supported" error that the normal Box2D repository has. Additionally we made our simulation a shared library so we could load it in our Python optimizer without having to reload the executable. This greatly (by a factor of 60) decreased our runtime for these simple simulations (the numbers in the table are the old execution numbers). Box2D's technical methods are well documented in a series of GDC talks, [available online](http://box2d.org/downloads/).
-
-## Part 3
-We use a coefficent of restitution of 0.75. And implemented many approaches, inlcuding random search. We found that gradient based methods were not useful as their performance greatly depended on their initalization -- if the ball wasn't going to impact the obstacle in either the original evaluations or the numerical gradient offsets, then there was zero gradient and the solvers immediately exited. Random parameter search was very effective, tending to produce good solutions in a competitive timeframe. CMA and Differential Evolution produced good solutions. 
+## Optimization Methods
+We implemented many approaches, inlcuding random search. We found that gradient based methods were not useful as their performance greatly depended on their initalization -- if the ball wasn't going to impact the obstacle in either the original evaluations or the numerical gradient offsets, then there was zero gradient and the solvers immediately exited. Random parameter search was very effective, tending to produce good solutions in a competitive timeframe. CMA and Differential Evolution produced good solutions. 
 
 We tried a variety of different solvers, each with different strengths and weaknesses. Most solvers were initialized with a randomly sampled point in the problem domain. 
 * **CMA-ES** is a derivative-free method that iteratively fits a multivariate Gaussian distribution to sampled costs, trending towards a minima in the solution space. We found that, while CMA sometimes returned good answers, its mean fitness never improved, suggesting that good configurations were only found due to the stochastic nature of the method. 
@@ -22,6 +17,8 @@ We tried a variety of different solvers, each with different strengths and weakn
 * **Differential Evolution** is a derivative-free optimization method, spawning a family of random samples and mixing together successful iterations. We used the default settings in the [Python implementation](https://github.com/scipy/scipy/blob/v0.17.0/scipy/optimize/_differentialevolution.py#L16-L206), with a crossover probability of 0.7, a population size of 15, and a crossover strategy where the current best is mutated with the difference between two random samples in the population (this is a greedy variant of the Scheme DE1 proposed in the [original paper](http://www1.icsi.berkeley.edu/~storn/TR-95-012.pdf))
 * **MaxLIPO** is an implementation of a recent method for [global optimization](https://arxiv.org/abs/1703.02628). It assumes the function follows the largest empirically observed Lipschitz constant, and samples the highest-potential points with this assumption, similar to certain methods of Bayesian or model-based optimization. In practice, it has been shown to outperform standard implementations of Bayesian optimization. Additionally, this variant interleaves, in every other iteration, a run of a derivative-free trust-region method that does quadratic interpolation method near the current best-answer. This is similar to Powell's [BOBYQA](https://en.wikipedia.org/wiki/BOBYQA). Unfortunately, it seems to exhibit non-linear runtime with respect to iteration time, but was able to find a good solution
 
+
+# Results for a single object bounce
 
 | Optimizer | Runtime (ms) | Best | Mean | Std Dev |
 |-------------------------------|--------------|-------|------|---------|
@@ -43,13 +40,13 @@ Our best solution had a score of -15.5, with a rotation of roughly 23 degrees. T
 <img src="images/part_3.gif?raw=true">
 
 
-## Part 4
+## Ball in cup
 We setup a similiar task in our simulation -- getting a ball in a cup, using three obstacles. Our model includes both friction and restitution. In trying out different solvers, none of them provided adequete solutions except for differential evolution. CMA-ES, MaxLIPO, Random, and all gradient based methods were unable to provide a solution within 1 minute of runtime, whereas differential evolution was able to solve the problem in (usually) about 5-15 seconds. An example configuration is seen below.
 
 <img src="images/part_4.gif?raw=true">
 
 
-## Part 5
+## Matching Real Wold Trajectories
 
 To match the real world trajectory, we optimized acceleration due to gravity, the friction coefficient, the restitution coefficient, and the three obstacles positions and orientations. In order to align the simulated ball trajectory to the provided video ball trajectory, we normalized the coordinates to a common reference frame. The total error was the sum of the mean square distance from the interpolated simulated trajectory to the video trajectory and the interpolated video trajectory to the simulated trajectory. Both trajectory errors were weighted with a [discount factor](https://en.wikipedia.org/wiki/Markov_decision_process#Definition) of 0.99 for the ground-truth trajectory. For the simulated trajectory, it is scaled to be `((0.99)^(n1))^(1.0/n2)` where n1 is the number of simulated frames, and n2 is the number ground-truth frames; this keeps integral of weights over the trajectories roughly equal. Both CMA and Differential Evolution work adequetely with this formulation of cost, finding a valid solution in a few hundred solver iterations (equivalent to a few thousand function evaluations.). 
 
